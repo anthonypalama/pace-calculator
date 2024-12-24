@@ -9,33 +9,62 @@ export const TimeCalculator = () => {
   const [time, setTime] = useState<string>('');
   const [pace, setPace] = useState<string>('');
 
-  const calculateTime = () => {
-    const distanceNum = Number(distance);
-    const speedNum = Number(speed);
+  const calculateFromSpeed = (newSpeed: number) => {
+    // Calcul de l'allure à partir de la vitesse
+    const minPerKm = 60 / newSpeed;
+    const paceMinutes = Math.floor(minPerKm);
+    const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
+    setPace(`${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`);
     
-    if (distanceNum > 0 && speedNum > 0) {
-      // Calcul du temps
-      const timeHours = distanceNum / speedNum;
+    // Calcul du temps si une distance est définie
+    if (distance) {
+      const timeHours = Number(distance) / newSpeed;
       const hours = Math.floor(timeHours);
       const minutes = Math.floor((timeHours - hours) * 60);
       const seconds = Math.round(((timeHours - hours) * 60 - minutes) * 60);
-      
       setTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-
-      // Calcul de l'allure
-      const minPerKm = 60 / speedNum;
-      const paceMinutes = Math.floor(minPerKm);
-      const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
-      setPace(`${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`);
-    } else {
-      setTime('');
-      setPace('');
     }
   };
 
-  useEffect(() => {
-    calculateTime();
-  }, [distance, speed]);
+  const calculateFromPace = (paceString: string) => {
+    const [paceMinutes, paceSeconds] = paceString.split(':').map(Number);
+    if (!isNaN(paceMinutes) && !isNaN(paceSeconds)) {
+      const totalMinutesPerKm = paceMinutes + paceSeconds / 60;
+      const newSpeed = 60 / totalMinutesPerKm;
+      setSpeed(newSpeed.toFixed(2));
+      
+      // Calcul du temps si une distance est définie
+      if (distance) {
+        const timeHours = Number(distance) / newSpeed;
+        const hours = Math.floor(timeHours);
+        const minutes = Math.floor((timeHours - hours) * 60);
+        const seconds = Math.round(((timeHours - hours) * 60 - minutes) * 60);
+        setTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+      }
+    }
+  };
+
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSpeed = Number(e.target.value);
+    setSpeed(e.target.value);
+    if (newSpeed > 0) {
+      calculateFromSpeed(newSpeed);
+    } else {
+      setPace('');
+      setTime('');
+    }
+  };
+
+  const handlePaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPace = e.target.value;
+    setPace(newPace);
+    if (newPace.match(/^\d{1,2}:\d{2}$/)) {
+      calculateFromPace(newPace);
+    } else {
+      setSpeed('');
+      setTime('');
+    }
+  };
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
@@ -60,7 +89,7 @@ export const TimeCalculator = () => {
             type="number"
             step="0.1"
             value={speed}
-            onChange={(e) => setSpeed(e.target.value)}
+            onChange={handleSpeedChange}
             placeholder="Entrez la vitesse"
             className="text-lg"
           />
@@ -71,8 +100,9 @@ export const TimeCalculator = () => {
             id="pace"
             type="text"
             value={pace}
-            readOnly
-            className="text-lg font-bold bg-secondary/20"
+            onChange={handlePaceChange}
+            placeholder="00:00"
+            className="text-lg"
           />
         </div>
         <div className="space-y-2">
