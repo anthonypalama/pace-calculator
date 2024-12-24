@@ -7,17 +7,25 @@ export const SpeedCalculator = () => {
   const [distance, setDistance] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [speed, setSpeed] = useState<string>('');
+  const [pace, setPace] = useState<string>('');
 
   const calculateSpeed = () => {
     if (distance && time) {
       const [hours, minutes, seconds] = time.split(':').map(Number);
       if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds)) {
         const totalHours = hours + minutes / 60 + seconds / 3600;
-        const speedValue = (Number(distance) / totalHours).toFixed(2);
-        setSpeed(speedValue);
+        const speedValue = Number(distance) / totalHours;
+        setSpeed(speedValue.toFixed(2));
+
+        // Calcul de l'allure
+        const minPerKm = 60 / speedValue;
+        const paceMinutes = Math.floor(minPerKm);
+        const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
+        setPace(`${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`);
       }
     } else {
       setSpeed('');
+      setPace('');
     }
   };
 
@@ -59,11 +67,21 @@ export const SpeedCalculator = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="speed">Vitesse calculée (km/h)</Label>
+          <Label htmlFor="speed">Vitesse (km/h)</Label>
           <Input
             id="speed"
             type="text"
             value={speed}
+            readOnly
+            className="text-lg font-bold bg-secondary/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="pace">Allure (min:sec/km)</Label>
+          <Input
+            id="pace"
+            type="text"
+            value={pace}
             readOnly
             className="text-lg font-bold bg-secondary/20"
           />

@@ -7,20 +7,29 @@ export const TimeCalculator = () => {
   const [distance, setDistance] = useState<string>('');
   const [speed, setSpeed] = useState<string>('');
   const [time, setTime] = useState<string>('');
+  const [pace, setPace] = useState<string>('');
 
   const calculateTime = () => {
     const distanceNum = Number(distance);
     const speedNum = Number(speed);
     
     if (distanceNum > 0 && speedNum > 0) {
+      // Calcul du temps
       const timeHours = distanceNum / speedNum;
       const hours = Math.floor(timeHours);
       const minutes = Math.floor((timeHours - hours) * 60);
       const seconds = Math.round(((timeHours - hours) * 60 - minutes) * 60);
       
       setTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+
+      // Calcul de l'allure
+      const minPerKm = 60 / speedNum;
+      const paceMinutes = Math.floor(minPerKm);
+      const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
+      setPace(`${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`);
     } else {
       setTime('');
+      setPace('');
     }
   };
 
@@ -54,6 +63,16 @@ export const TimeCalculator = () => {
             onChange={(e) => setSpeed(e.target.value)}
             placeholder="Entrez la vitesse"
             className="text-lg"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="pace">Allure (min:sec/km)</Label>
+          <Input
+            id="pace"
+            type="text"
+            value={pace}
+            readOnly
+            className="text-lg font-bold bg-secondary/20"
           />
         </div>
         <div className="space-y-2">
