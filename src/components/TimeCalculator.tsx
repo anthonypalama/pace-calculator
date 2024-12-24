@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export const TimeCalculator = () => {
   const [distance, setDistance] = useState<string>('');
   const [speed, setSpeed] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [pace, setPace] = useState<string>('');
+
+  const quickDistances = [
+    { name: '5K', value: '5' },
+    { name: '10K', value: '10' },
+    { name: 'Semi', value: '21.1' },
+    { name: 'Marathon', value: '42.2' },
+  ];
 
   const calculateFromSpeed = (newSpeed: number) => {
     // Calcul de l'allure à partir de la vitesse
@@ -81,6 +89,18 @@ export const TimeCalculator = () => {
             placeholder="Entrez la distance"
             className="text-lg"
           />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {quickDistances.map((qd) => (
+              <Button
+                key={qd.name}
+                variant="outline"
+                size="sm"
+                onClick={() => setDistance(qd.value)}
+              >
+                {qd.name}
+              </Button>
+            ))}
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="speed">Vitesse (km/h)</Label>
