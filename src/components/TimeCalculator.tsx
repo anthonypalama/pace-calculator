@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { TimeInput } from './TimeInput';
 
 export const TimeCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -181,12 +182,12 @@ export const TimeCalculator = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="time">Temps estimé</Label>
-          <Input
+          <TimeInput
             id="time"
-            type="text"
             value={time}
-            readOnly
+            onChange={setTime}
             className="text-lg font-bold bg-secondary/20"
+            readOnly
           />
         </div>
         

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { TimeInput } from './TimeInput';
 
 export const PredictedTimeCalculator = () => {
   const [referenceDistance, setReferenceDistance] = useState<string>('');
@@ -79,12 +80,10 @@ export const PredictedTimeCalculator = () => {
 
         <div className="space-y-2">
           <Label htmlFor="referenceTime">Temps de référence (hh:mm:ss)</Label>
-          <Input
+          <TimeInput
             id="referenceTime"
-            type="text"
             value={referenceTime}
-            onChange={(e) => setReferenceTime(e.target.value)}
-            placeholder="00:00:00"
+            onChange={setReferenceTime}
             className="text-lg"
           />
         </div>
@@ -107,12 +106,12 @@ export const PredictedTimeCalculator = () => {
 
         <div className="space-y-2">
           <Label htmlFor="predictedTime">Temps prédit</Label>
-          <Input
+          <TimeInput
             id="predictedTime"
-            type="text"
             value={predictedTime}
-            readOnly
+            onChange={() => {}}
             className="text-lg font-bold bg-secondary/20"
+            readOnly
           />
         </div>
       </div>

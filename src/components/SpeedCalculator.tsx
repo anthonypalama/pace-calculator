@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { TimeInput } from './TimeInput';
 
 export const SpeedCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -124,12 +125,10 @@ export const SpeedCalculator = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="time">Temps (hh:mm:ss)</Label>
-          <Input
+          <TimeInput
             id="time"
-            type="text"
             value={time}
-            onChange={handleTimeChange}
-            placeholder="00:00:00"
+            onChange={setTime}
             className="text-lg"
           />
         </div>
