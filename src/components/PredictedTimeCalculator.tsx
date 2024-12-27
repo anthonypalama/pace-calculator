@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const PredictedTimeCalculator = () => {
   const [referenceDistance, setReferenceDistance] = useState<string>('');
@@ -28,8 +27,20 @@ export const PredictedTimeCalculator = () => {
     if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds) && refDistanceNum > 0) {
       const totalSeconds = hours * 3600 + minutes * 60 + seconds;
       
-      // Formule de Riegel pour la prédiction du temps
-      const predictedSeconds = totalSeconds * Math.pow(targetDistanceNum / refDistanceNum, 1.06);
+      // Nomogramme de Mercier
+      // Facteur de correction basé sur la distance
+      const getDistanceFactor = (distance: number) => {
+        if (distance <= 5) return 1;
+        if (distance <= 10) return 1.06;
+        if (distance <= 21.1) return 1.12;
+        return 1.18;
+      };
+
+      const refFactor = getDistanceFactor(refDistanceNum);
+      const targetFactor = getDistanceFactor(targetDistanceNum);
+      
+      // Calcul du temps prédit avec le nomogramme de Mercier
+      const predictedSeconds = totalSeconds * (targetDistanceNum / refDistanceNum) * (targetFactor / refFactor);
       
       const predHours = Math.floor(predictedSeconds / 3600);
       const predMinutes = Math.floor((predictedSeconds % 3600) / 60);
@@ -40,6 +51,11 @@ export const PredictedTimeCalculator = () => {
       );
     }
   };
+
+  // Déclencher le calcul automatiquement à chaque changement
+  React.useEffect(() => {
+    calculatePredictedTime();
+  }, [referenceDistance, referenceTime, targetDistance]);
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
@@ -53,10 +69,7 @@ export const PredictedTimeCalculator = () => {
                 key={d.name}
                 variant={referenceDistance === d.value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => {
-                  setReferenceDistance(d.value);
-                  calculatePredictedTime();
-                }}
+                onClick={() => setReferenceDistance(d.value)}
               >
                 {d.name}
               </Button>
@@ -70,12 +83,7 @@ export const PredictedTimeCalculator = () => {
             id="referenceTime"
             type="text"
             value={referenceTime}
-            onChange={(e) => {
-              setReferenceTime(e.target.value);
-              if (e.target.value.match(/^\d{2}:\d{2}:\d{2}$/)) {
-                calculatePredictedTime();
-              }
-            }}
+            onChange={(e) => setReferenceTime(e.target.value)}
             placeholder="00:00:00"
             className="text-lg"
           />
@@ -89,10 +97,7 @@ export const PredictedTimeCalculator = () => {
                 key={d.name}
                 variant={targetDistance === d.value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => {
-                  setTargetDistance(d.value);
-                  calculatePredictedTime();
-                }}
+                onClick={() => setTargetDistance(d.value)}
               >
                 {d.name}
               </Button>

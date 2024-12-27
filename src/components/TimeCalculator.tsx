@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -110,6 +110,23 @@ export const TimeCalculator = () => {
       setTime('');
     }
   };
+
+  useEffect(() => {
+    if (speed && distance) {
+      const newSpeed = Number(speed);
+      if (newSpeed > 0) {
+        calculateFromSpeed(newSpeed);
+        calculateSplits();
+      }
+    }
+  }, [speed, distance]);
+
+  useEffect(() => {
+    if (pace.match(/^\d{1,2}:\d{2}$/)) {
+      calculateFromPace(pace);
+      calculateSplits();
+    }
+  }, [pace, distance]);
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">

@@ -80,6 +80,14 @@ export const SpeedCalculator = () => {
     }
   };
 
+  // Calcul automatique à chaque changement
+  React.useEffect(() => {
+    if (distance && time.match(/^\d{2}:\d{2}:\d{2}$/)) {
+      calculateSpeed();
+      calculateSplits();
+    }
+  }, [distance, time]);
+
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-center">Calculateur d'Allure</h2>
