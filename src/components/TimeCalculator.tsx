@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TimeInput } from './TimeInput';
+import { QuickDistanceButtons } from './QuickDistanceButtons';
+import { SplitTimes } from './SplitTimes';
+import { calculatePaceFromSpeed, calculateSplitTimes } from '../utils/timeCalculations';
 
 export const TimeCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -13,56 +16,10 @@ export const TimeCalculator = () => {
   const [showSplits, setShowSplits] = useState(false);
   const [splits, setSplits] = useState<string[]>([]);
 
-  const quickDistances = [
-    { name: '5K', value: '5' },
-    { name: '10K', value: '10' },
-    { name: 'Semi', value: '21.1' },
-    { name: 'Marathon', value: '42.2' },
-  ];
-
-  const calculateSplits = () => {
-    if (!speed || !distance) return;
-    
-    const totalDistance = parseFloat(distance);
-    const speedKmH = parseFloat(speed);
-    const timePerKm = 60 / speedKmH; // minutes per km
-    
-    const newSplits = [];
-    for (let km = 1; km <= totalDistance; km++) {
-      const timeAtKm = timePerKm * km;
-      const hours = Math.floor(timeAtKm / 60);
-      const minutes = Math.floor(timeAtKm % 60);
-      const seconds = Math.round((timeAtKm * 60) % 60);
-      
-      newSplits.push(
-        `${km} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-      );
-    }
-    
-    // Ajouter le dernier split si la distance n'est pas un nombre entier
-    if (totalDistance % 1 !== 0) {
-      const timeAtFinal = timePerKm * totalDistance;
-      const hours = Math.floor(timeAtFinal / 60);
-      const minutes = Math.floor(timeAtFinal % 60);
-      const seconds = Math.round((timeAtFinal * 60) % 60);
-      
-      newSplits.push(
-        `${totalDistance} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-      );
-    }
-    
-    setSplits(newSplits);
-    setShowSplits(true);
-  };
-
   const calculateFromSpeed = (newSpeed: number) => {
-    // Calcul de l'allure à partir de la vitesse
-    const minPerKm = 60 / newSpeed;
-    const paceMinutes = Math.floor(minPerKm);
-    const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
-    setPace(`${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`);
+    const newPace = calculatePaceFromSpeed(newSpeed);
+    setPace(newPace);
     
-    // Calcul du temps si une distance est définie
     if (distance) {
       const timeHours = Number(distance) / newSpeed;
       const hours = Math.floor(timeHours);
@@ -79,7 +36,6 @@ export const TimeCalculator = () => {
       const newSpeed = 60 / totalMinutesPerKm;
       setSpeed(newSpeed.toFixed(2));
       
-      // Calcul du temps si une distance est définie
       if (distance) {
         const timeHours = Number(distance) / newSpeed;
         const hours = Math.floor(timeHours);
@@ -117,7 +73,9 @@ export const TimeCalculator = () => {
       const newSpeed = Number(speed);
       if (newSpeed > 0) {
         calculateFromSpeed(newSpeed);
-        calculateSplits();
+        const newSplits = calculateSplitTimes(Number(distance), newSpeed);
+        setSplits(newSplits);
+        setShowSplits(true);
       }
     }
   }, [speed, distance]);
@@ -125,7 +83,6 @@ export const TimeCalculator = () => {
   useEffect(() => {
     if (pace.match(/^\d{1,2}:\d{2}$/)) {
       calculateFromPace(pace);
-      calculateSplits();
     }
   }, [pace, distance]);
 
@@ -144,18 +101,7 @@ export const TimeCalculator = () => {
             placeholder="Entrez la distance"
             className="text-lg"
           />
-          <div className="flex flex-wrap gap-2 mt-2">
-            {quickDistances.map((qd) => (
-              <Button
-                key={qd.name}
-                variant="outline"
-                size="sm"
-                onClick={() => setDistance(qd.value)}
-              >
-                {qd.name}
-              </Button>
-            ))}
-          </div>
+          <QuickDistanceButtons onSelect={setDistance} selectedValue={distance} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="speed">Vitesse (km/h)</Label>
@@ -192,25 +138,20 @@ export const TimeCalculator = () => {
         </div>
         
         <Button 
-          onClick={calculateSplits}
+          onClick={() => {
+            if (speed && distance) {
+              const newSplits = calculateSplitTimes(Number(distance), Number(speed));
+              setSplits(newSplits);
+              setShowSplits(true);
+            }
+          }}
           className="w-full"
           disabled={!speed || !distance}
         >
           Afficher les temps de passage
         </Button>
 
-        {showSplits && splits.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <h3 className="font-semibold">Temps de passage :</h3>
-            <div className="max-h-60 overflow-y-auto space-y-1">
-              {splits.map((split, index) => (
-                <div key={index} className="text-sm p-2 bg-secondary/10 rounded">
-                  {split}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <SplitTimes splits={splits} show={showSplits} />
       </div>
     </Card>
   );

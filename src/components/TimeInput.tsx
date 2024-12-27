@@ -7,17 +7,21 @@ interface TimeInputProps {
   placeholder?: string;
   className?: string;
   id?: string;
+  readOnly?: boolean;
 }
 
-export const TimeInput = ({ value, onChange, placeholder = "00:00:00", className, id }: TimeInputProps) => {
+export const TimeInput = ({ 
+  value, 
+  onChange, 
+  placeholder = "00:00:00", 
+  className,
+  id,
+  readOnly = false
+}: TimeInputProps) => {
   const formatTimeString = (input: string): string => {
-    // Supprimer tout ce qui n'est pas un chiffre
     const numbers = input.replace(/\D/g, '');
-    
-    // Limiter à 6 chiffres maximum
     const limited = numbers.slice(0, 6);
     
-    // Ajouter les deux-points aux bons endroits
     if (limited.length <= 2) {
       return limited;
     } else if (limited.length <= 4) {
@@ -28,12 +32,13 @@ export const TimeInput = ({ value, onChange, placeholder = "00:00:00", className
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const formatted = formatTimeString(e.target.value);
     onChange(formatted);
   };
 
   const handleBlur = () => {
-    // Compléter avec des zéros si nécessaire
+    if (readOnly) return;
     if (value.length > 0 && value.length < 8) {
       const parts = value.split(':');
       const hours = parts[0]?.padStart(2, '0') || '00';
@@ -53,6 +58,7 @@ export const TimeInput = ({ value, onChange, placeholder = "00:00:00", className
       placeholder={placeholder}
       className={className}
       maxLength={8}
+      readOnly={readOnly}
     />
   );
 };
