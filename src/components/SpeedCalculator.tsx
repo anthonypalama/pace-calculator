@@ -9,6 +9,8 @@ export const SpeedCalculator = () => {
   const [time, setTime] = useState<string>('');
   const [speed, setSpeed] = useState<string>('');
   const [pace, setPace] = useState<string>('');
+  const [showSplits, setShowSplits] = useState(false);
+  const [splits, setSplits] = useState<string[]>([]);
 
   const quickDistances = [
     { name: '5K', value: '5' },
@@ -26,7 +28,6 @@ export const SpeedCalculator = () => {
       const calculatedSpeed = distanceNum / totalHours;
       setSpeed(calculatedSpeed.toFixed(2));
 
-      // Calcul de l'allure
       const minPerKm = 60 / calculatedSpeed;
       const paceMinutes = Math.floor(minPerKm);
       const paceSeconds = Math.round((minPerKm - paceMinutes) * 60);
@@ -35,6 +36,41 @@ export const SpeedCalculator = () => {
       setSpeed('');
       setPace('');
     }
+  };
+
+  const calculateSplits = () => {
+    if (!speed || !distance) return;
+    
+    const totalDistance = parseFloat(distance);
+    const speedKmH = parseFloat(speed);
+    const timePerKm = 60 / speedKmH; // minutes per km
+    
+    const newSplits = [];
+    for (let km = 1; km <= totalDistance; km++) {
+      const timeAtKm = timePerKm * km;
+      const hours = Math.floor(timeAtKm / 60);
+      const minutes = Math.floor(timeAtKm % 60);
+      const seconds = Math.round((timeAtKm * 60) % 60);
+      
+      newSplits.push(
+        `${km} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    }
+    
+    // Ajouter le dernier split si la distance n'est pas un nombre entier
+    if (totalDistance % 1 !== 0) {
+      const timeAtFinal = timePerKm * totalDistance;
+      const hours = Math.floor(timeAtFinal / 60);
+      const minutes = Math.floor(timeAtFinal % 60);
+      const seconds = Math.round((timeAtFinal * 60) % 60);
+      
+      newSplits.push(
+        `${totalDistance} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    }
+    
+    setSplits(newSplits);
+    setShowSplits(true);
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +145,27 @@ export const SpeedCalculator = () => {
             className="text-lg font-bold bg-secondary/20"
           />
         </div>
+
+        <Button 
+          onClick={calculateSplits}
+          className="w-full"
+          disabled={!speed || !distance}
+        >
+          Afficher les temps de passage
+        </Button>
+
+        {showSplits && splits.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <h3 className="font-semibold">Temps de passage :</h3>
+            <div className="max-h-60 overflow-y-auto space-y-1">
+              {splits.map((split, index) => (
+                <div key={index} className="text-sm p-2 bg-secondary/10 rounded">
+                  {split}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );

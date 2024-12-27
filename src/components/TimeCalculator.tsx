@@ -27,7 +27,7 @@ export const TimeCalculator = () => {
     const timePerKm = 60 / speedKmH; // minutes per km
     
     const newSplits = [];
-    for (let km = 1; km <= Math.ceil(totalDistance); km++) {
+    for (let km = 1; km <= totalDistance; km++) {
       const timeAtKm = timePerKm * km;
       const hours = Math.floor(timeAtKm / 60);
       const minutes = Math.floor(timeAtKm % 60);
@@ -35,6 +35,18 @@ export const TimeCalculator = () => {
       
       newSplits.push(
         `${km} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    }
+    
+    // Ajouter le dernier split si la distance n'est pas un nombre entier
+    if (totalDistance % 1 !== 0) {
+      const timeAtFinal = timePerKm * totalDistance;
+      const hours = Math.floor(timeAtFinal / 60);
+      const minutes = Math.floor(timeAtFinal % 60);
+      const seconds = Math.round((timeAtFinal * 60) % 60);
+      
+      newSplits.push(
+        `${totalDistance} km - ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
       );
     }
     
