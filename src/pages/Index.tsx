@@ -1,58 +1,58 @@
-import { useState } from 'react';
-import { PaceCalculator } from '@/components/PaceCalculator';
-import { TimeCalculator } from '@/components/TimeCalculator';
-import { SpeedCalculator } from '@/components/SpeedCalculator';
-import { PredictedTimeCalculator } from '@/components/PredictedTimeCalculator';
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PaceCalculator from "@/components/PaceCalculator";
+import TimeCalculator from "@/components/TimeCalculator";
+import SpeedCalculator from "@/components/SpeedCalculator";
+import PredictedTimeCalculator from "@/components/PredictedTimeCalculator";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pace');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F2FCE2]/20 via-[#D3E4FD]/20 to-[#FFDEE2]/20 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-purple-600/80">
+          <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED]">
             Calculateur d'Allure
           </h1>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate('/settings')}
-            className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300"
+            className="rounded-full hover:bg-white/50 backdrop-blur-sm"
           >
             <Settings className="h-5 w-5" />
           </Button>
         </div>
 
-        <div className="backdrop-blur-sm bg-white/30 rounded-xl p-4 shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 gap-2 bg-transparent h-auto p-1">
               <TabsTrigger 
                 value="pace" 
-                className="data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground backdrop-blur-sm bg-white/50 py-2"
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
               >
                 Convertisseur
               </TabsTrigger>
               <TabsTrigger 
                 value="time" 
-                className="data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground backdrop-blur-sm bg-white/50 py-2"
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
               >
                 Temps
               </TabsTrigger>
               <TabsTrigger 
                 value="speed" 
-                className="data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground backdrop-blur-sm bg-white/50 py-2"
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
               >
                 Allure
               </TabsTrigger>
               <TabsTrigger 
                 value="predicted" 
-                className="data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground backdrop-blur-sm bg-white/50 py-2"
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
               >
                 Prédiction
               </TabsTrigger>
