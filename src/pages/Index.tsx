@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PaceCalculator from "@/components/PaceCalculator";
-import TimeCalculator from "@/components/TimeCalculator";
-import SpeedCalculator from "@/components/SpeedCalculator";
-import PredictedTimeCalculator from "@/components/PredictedTimeCalculator";
+import { PaceCalculator } from "@/components/PaceCalculator";
+import { TimeCalculator } from "@/components/TimeCalculator";
+import { SpeedCalculator } from "@/components/SpeedCalculator";
+import { PredictedTimeCalculator } from "@/components/PredictedTimeCalculator";
 import { useState } from "react";
 
 const Index = () => {
