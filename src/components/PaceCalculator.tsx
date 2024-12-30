@@ -15,10 +15,15 @@ export const PaceCalculator = () => {
   };
 
   const convertMinKmToKmh = (minKm: string) => {
-    const [minutes, seconds] = minKm.split(':').map(Number);
-    if (!isNaN(minutes) && !isNaN(seconds)) {
-      const totalMinutes = minutes + seconds / 60;
-      return (60 / totalMinutes).toFixed(2);
+    console.log("Converting pace:", minKm);
+    const [minutes, seconds = '0'] = minKm.split(':').map(Number);
+    if (!isNaN(minutes)) {
+      const totalMinutes = minutes + (Number(seconds) / 60);
+      if (totalMinutes > 0) {
+        const kmhValue = (60 / totalMinutes).toFixed(2);
+        console.log("Calculated speed:", kmhValue);
+        return kmhValue;
+      }
     }
     return '';
   };
@@ -33,7 +38,8 @@ export const PaceCalculator = () => {
   };
 
   const handleMinKmChange = (value: string) => {
-    if (value.match(/^\d{1,2}:\d{0,2}$/)) {
+    console.log("Input pace:", value);
+    if (value.match(/^\d{1,2}(:\d{0,2})?$/)) {
       setMinKm(value);
       const kmhValue = convertMinKmToKmh(value);
       setKmh(kmhValue);
@@ -65,6 +71,7 @@ export const PaceCalculator = () => {
             onChange={(e) => handleMinKmChange(e.target.value)}
             placeholder="00:00"
             className="text-lg"
+            pattern="\d{1,2}(:\d{0,2})?"
           />
         </div>
       </div>

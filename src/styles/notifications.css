@@ -1,0 +1,29 @@
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.record-notification {
+  animation: bounce 0.5s ease-in-out;
+  background: linear-gradient(135deg, #F2FCE2, #D3E4FD);
+  border: 2px solid #8B5CF6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.record-notification button {
+  background-color: #8B5CF6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.record-notification button:hover {
+  background-color: #7C3AED;
+  transform: scale(1.05);
+}
