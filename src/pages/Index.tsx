@@ -6,6 +6,8 @@ import { PaceCalculator } from "@/components/PaceCalculator";
 import { TimeCalculator } from "@/components/TimeCalculator";
 import { SpeedCalculator } from "@/components/SpeedCalculator";
 import { PredictedTimeCalculator } from "@/components/PredictedTimeCalculator";
+import { PredictiveFinish } from "@/components/PredictiveFinish";
+import { VmaCalculator } from "@/components/VmaCalculator";
 import { useState } from "react";
 
 const Index = () => {
@@ -31,7 +33,7 @@ const Index = () => {
 
         <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 gap-2 bg-transparent h-auto p-1">
+            <TabsList className="w-full grid grid-cols-2 sm:grid-cols-6 gap-2 bg-transparent h-auto p-1">
               <TabsTrigger 
                 value="pace" 
                 className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
@@ -56,6 +58,18 @@ const Index = () => {
               >
                 Prédiction
               </TabsTrigger>
+              <TabsTrigger 
+                value="finish" 
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
+              >
+                Arrivée
+              </TabsTrigger>
+              <TabsTrigger 
+                value="vma" 
+                className="data-[state=active]:bg-[#8B5CF6] data-[state=active]:text-white bg-[#D3E4FD] py-2"
+              >
+                VMA
+              </TabsTrigger>
             </TabsList>
 
             <div className="mt-6">
@@ -70,6 +84,12 @@ const Index = () => {
               </TabsContent>
               <TabsContent value="predicted">
                 <PredictedTimeCalculator />
+              </TabsContent>
+              <TabsContent value="finish">
+                <PredictiveFinish />
+              </TabsContent>
+              <TabsContent value="vma">
+                <VmaCalculator />
               </TabsContent>
             </div>
           </Tabs>
