@@ -14,8 +14,8 @@ export const showRecordNotification = (distance: string, time: string) => {
       },
       style: {
         backgroundColor: '#F2FCE2',
-        fontSize: '1.2rem',
-        padding: '1rem',
+        fontSize: '1.5rem',
+        padding: '1.5rem',
         animation: 'bounce 0.5s ease-in-out',
       },
     }

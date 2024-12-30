@@ -16,21 +16,23 @@ export const handleShare = async (distance: string, time: string) => {
         title: 'Nouveau Record Personnel',
         text: text,
         url: window.location.href,
+        files: [
+          await fetch(imageUrl).then(r => r.blob()).then(blob => 
+            new File([blob], 'record.jpg', { type: 'image/jpeg' })
+          )
+        ]
       };
       
-      // Tentative de partage avec l'API Web Share
       await navigator.share(shareData);
       console.log('Contenu partagé avec succès');
+      return { success: true, method: 'share' };
     } else {
-      // Fallback si l'API Web Share n'est pas disponible
       await navigator.clipboard.writeText(text);
       console.log('Texte copié dans le presse-papier');
       return { success: true, method: 'clipboard' };
     }
-    return { success: true, method: 'share' };
   } catch (error) {
     console.error('Erreur lors du partage:', error);
-    // Tenter de copier dans le presse-papier comme solution de repli
     try {
       await navigator.clipboard.writeText(text);
       console.log('Texte copié dans le presse-papier comme solution de repli');

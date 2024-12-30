@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,11 +37,30 @@ export const PaceCalculator = () => {
     }
   };
 
+  const formatPaceInput = (value: string): string => {
+    // Supprime tous les caractères non numériques sauf ":"
+    const cleaned = value.replace(/[^\d:]/g, '');
+    
+    // Sépare les minutes et les secondes
+    const [minutes, seconds] = cleaned.split(':');
+    
+    // Si on a des secondes, s'assure qu'elles sont <= 59
+    if (seconds !== undefined) {
+      const numSeconds = parseInt(seconds);
+      if (!isNaN(numSeconds) && numSeconds > 59) {
+        return `${minutes}:59`;
+      }
+    }
+    
+    return cleaned;
+  };
+
   const handleMinKmChange = (value: string) => {
     console.log("Input pace:", value);
-    if (value.match(/^\d{1,2}(:\d{0,2})?$/)) {
-      setMinKm(value);
-      const kmhValue = convertMinKmToKmh(value);
+    const formattedValue = formatPaceInput(value);
+    if (formattedValue.match(/^\d{1,2}(:\d{0,2})?$/)) {
+      setMinKm(formattedValue);
+      const kmhValue = convertMinKmToKmh(formattedValue);
       setKmh(kmhValue);
     }
   };
