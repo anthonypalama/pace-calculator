@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Share2 } from "lucide-react";
 
 const Settings = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingRecords, setIsEditingRecords] = useState(false);
   const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
@@ -41,28 +43,68 @@ const Settings = () => {
     toast.success("Profil mis à jour avec succès !");
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUser(prev => ({
-          ...prev,
-          avatar: reader.result as string
-        }));
-      };
-      reader.readAsDataURL(file);
+  const handleSaveRecords = (distance: string, newValue: string) => {
+    const oldValue = user.records[distance as keyof typeof user.records];
+    if (oldValue && isNewRecord(oldValue, newValue)) {
+      setUser(prev => ({
+        ...prev,
+        records: {
+          ...prev.records,
+          [distance]: newValue
+        }
+      }));
+      
+      toast.success("🎉 Nouveau record personnel !", {
+        description: `Félicitations ! Vous avez battu votre record sur ${distance}`,
+        action: {
+          label: "Partager",
+          onClick: () => handleShare(distance, newValue)
+        },
+        className: "animate-bounce"
+      });
+    } else {
+      setUser(prev => ({
+        ...prev,
+        records: {
+          ...prev.records,
+          [distance]: newValue
+        }
+      }));
     }
   };
 
-  const handleRecordChange = (distance: string, value: string) => {
-    setUser(prev => ({
-      ...prev,
-      records: {
-        ...prev.records,
-        [distance]: value
+  const isNewRecord = (oldTime: string, newTime: string): boolean => {
+    const oldSeconds = timeToSeconds(oldTime);
+    const newSeconds = timeToSeconds(newTime);
+    return newSeconds < oldSeconds;
+  };
+
+  const timeToSeconds = (time: string): number => {
+    const parts = time.split(':').map(Number);
+    if (parts.length === 3) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    return parts[0] * 60 + parts[1];
+  };
+
+  const handleShare = async (distance: string, time: string) => {
+    const text = `Je viens de battre mon record personnel sur ${distance} avec un temps de ${time} ! 🏃‍♂️🎉`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Nouveau Record Personnel',
+          text: text,
+          url: window.location.href
+        });
+      } catch (error) {
+        console.error('Erreur lors du partage:', error);
       }
-    }));
+    } else {
+      // Fallback pour les navigateurs qui ne supportent pas l'API Web Share
+      navigator.clipboard.writeText(text);
+      toast.success("Texte copié dans le presse-papier !");
+    }
   };
 
   return (
@@ -91,7 +133,19 @@ const Settings = () => {
                     type="file"
                     accept="image/*"
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={handleImageChange}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setUser(prev => ({
+                            ...prev,
+                            avatar: reader.result as string
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
                   />
                 )}
               </div>
@@ -126,26 +180,45 @@ const Settings = () => {
                 onClick={() => isEditing ? handleSave() : setIsEditing(true)}
                 className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white"
               >
-                {isEditing ? "Sauvegarder" : "Modifier"}
+                {isEditing ? "Sauvegarder" : "Modifier le profil"}
               </Button>
             </div>
           </Card>
 
           {/* Records Personnels */}
           <Card className="p-6 bg-white/80 backdrop-blur-sm">
-            <h3 className="text-xl font-semibold mb-4 text-[#8B5CF6]">Records Personnels</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-[#8B5CF6]">Records Personnels</h3>
+              <Button
+                onClick={() => setIsEditingRecords(!isEditingRecords)}
+                className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white"
+              >
+                {isEditingRecords ? "Terminer" : "Modifier les records"}
+              </Button>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Object.entries(user.records).map(([distance, time]) => (
                 <div key={distance} className="p-3 bg-[#D3E4FD] rounded-lg">
                   <div className="text-sm text-gray-600">{distance}</div>
-                  {isEditing ? (
+                  {isEditingRecords ? (
                     <Input
                       value={time}
-                      onChange={(e) => handleRecordChange(distance, e.target.value)}
+                      onChange={(e) => handleSaveRecords(distance, e.target.value)}
                       className="mt-1"
+                      placeholder="mm:ss"
                     />
                   ) : (
-                    <div className="font-semibold text-[#8B5CF6]">{time}</div>
+                    <div className="font-semibold text-[#8B5CF6] flex items-center justify-between">
+                      {time}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleShare(distance, time)}
+                        className="ml-2"
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
                 </div>
               ))}

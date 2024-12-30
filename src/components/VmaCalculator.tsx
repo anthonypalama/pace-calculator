@@ -14,7 +14,7 @@ export const VmaCalculator = () => {
     { name: '1000m', value: '1' },
     { name: '2000m', value: '2' },
     { name: '3000m', value: '3' },
-    { name: 'Cooper (12min)', value: 'cooper' },
+    { name: '5000m', value: '5' },
   ];
 
   const calculateVma = () => {
@@ -23,18 +23,11 @@ export const VmaCalculator = () => {
     const [hours, minutes, seconds] = time.split(':').map(Number);
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
     
-    let calculatedVma = 0;
+    const distanceMeters = parseFloat(distance) * 1000;
+    const speedKmh = (distanceMeters / totalSeconds) * 3.6;
     
-    if (distance === 'cooper') {
-      // Test de Cooper (distance en 12 minutes)
-      calculatedVma = (parseFloat(distance) * 1000) / 200;
-    } else {
-      const distanceMeters = parseFloat(distance) * 1000;
-      const speedKmh = (distanceMeters / totalSeconds) * 3.6;
-      
-      // Formule de Léger-Boucher
-      calculatedVma = speedKmh * 1.1;
-    }
+    // Formule de Léger-Boucher
+    const calculatedVma = speedKmh * 1.1;
 
     setVma(calculatedVma.toFixed(1));
   };
