@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimeInput } from './TimeInput';
+import { QuickDistanceButtons } from './QuickDistanceButtons';
 
 export const PredictiveFinish = () => {
   const [elapsedTime, setElapsedTime] = useState<string>('');
@@ -69,6 +70,10 @@ export const PredictiveFinish = () => {
             onChange={(e) => setTotalDistance(e.target.value)}
             placeholder="0.0"
             className="text-lg"
+          />
+          <QuickDistanceButtons
+            onSelect={(value) => setTotalDistance(value)}
+            selectedValue={totalDistance}
           />
         </div>
         <div className="space-y-2">
