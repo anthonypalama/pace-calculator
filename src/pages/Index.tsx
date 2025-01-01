@@ -12,6 +12,7 @@ import { Vo2MaxCalculator } from "@/components/Vo2MaxCalculator";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AuthButton } from "@/components/AuthButton";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Index = () => {
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
+            <AuthButton />
             <LanguageSwitcher />
             <Button
               variant="ghost"

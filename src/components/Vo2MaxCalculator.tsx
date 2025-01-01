@@ -1,30 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Vo2MaxCalculator = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('male');
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
   const [vo2max, setVo2max] = useState<number | null>(null);
 
-  const calculateVo2Max = () => {
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const loadUserData = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('age, gender, weight, height')
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Erreur de chargement des données:', error);
+      return;
+    }
+
+    if (data) {
+      setAge(data.age.toString());
+      setGender(data.gender);
+      setWeight(data.weight.toString());
+      setHeight(data.height.toString());
+    }
+  };
+
+  const saveUserData = async () => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('user_profiles')
+      .upsert({
+        user_id: user.id,
+        age: parseInt(age),
+        gender,
+        weight: parseFloat(weight),
+        height: parseFloat(height),
+        vo2max: vo2max,
+        updated_at: new Date().toISOString(),
+      });
+
+    if (error) {
+      console.error('Erreur de sauvegarde:', error);
+      toast({
+        title: t('vo2max.saveError'),
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: t('vo2max.saveSuccess'),
+        description: t('vo2max.dataSaved'),
+      });
+    }
+  };
+
+  const calculateVo2Max = async () => {
     if (!age || !weight || !height) return;
 
-    // Formule de calcul VO2 Max (estimation basée sur les données anthropométriques)
     const baseVo2Max = gender === 'male' ? 56.363 : 44.998;
     const ageEffect = -0.381 * parseInt(age);
     const weightEffect = -0.754 * (parseInt(weight) / Math.pow(parseInt(height) / 100, 2));
     const heightEffect = 0.464 * parseInt(height);
 
-    const estimated = baseVo2Max + ageEffect + weightEffect + heightEffect;
-    setVo2max(Math.max(0, Math.round(estimated * 10) / 10));
+    const estimated = Math.max(0, Math.round((baseVo2Max + ageEffect + weightEffect + heightEffect) * 10) / 10);
+    setVo2max(estimated);
+
+    if (user) {
+      await saveUserData();
+    }
   };
 
   const getVo2MaxCategory = (value: number) => {
