@@ -1,0 +1,31 @@
+{
+  "tabs": {
+    "converter": "CONVERTER",
+    "time": "TIME",
+    "speed": "SPEED",
+    "predicted": "PREDICTION",
+    "finish": "FINISH",
+    "vma": "VMA",
+    "vo2max": "VO2 MAX"
+  },
+  "vo2max": {
+    "title": "VO2 Max Calculator",
+    "age": "Age",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "weight": "Weight (kg)",
+    "height": "Height (cm)",
+    "result": "Estimated VO2 Max",
+    "calculate": "Calculate",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "belowAverage": "Below Average",
+    "poor": "Poor"
+  },
+  "common": {
+    "language": "Language",
+    "appTitle": "PACE CALCULATOR"
+  }
+}

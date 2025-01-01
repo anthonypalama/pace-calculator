@@ -1,0 +1,31 @@
+{
+  "tabs": {
+    "converter": "CONVERTISSEUR",
+    "time": "TEMPS",
+    "speed": "VITESSE",
+    "predicted": "PRÉDICTION",
+    "finish": "ARRIVÉE",
+    "vma": "VMA",
+    "vo2max": "VO2 MAX"
+  },
+  "vo2max": {
+    "title": "Calculateur de VO2 Max",
+    "age": "Âge",
+    "gender": "Genre",
+    "male": "Homme",
+    "female": "Femme",
+    "weight": "Poids (kg)",
+    "height": "Taille (cm)",
+    "result": "VO2 Max estimée",
+    "calculate": "Calculer",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "average": "Moyen",
+    "belowAverage": "En dessous de la moyenne",
+    "poor": "Faible"
+  },
+  "common": {
+    "language": "Langue",
+    "appTitle": "CALCULATEUR D'ALLURE"
+  }
+}
