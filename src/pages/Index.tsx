@@ -19,10 +19,10 @@ const Index = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#222222] to-[#000000] p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#9b87f5] to-[#F1F0FB] p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+          <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#8E9196] to-[#8A898C]">
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
@@ -43,43 +43,43 @@ const Index = () => {
             <TabsList className="w-full grid grid-cols-2 sm:grid-cols-7 gap-2 bg-transparent h-auto p-1">
               <TabsTrigger 
                 value="pace" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.converter')}
               </TabsTrigger>
               <TabsTrigger 
                 value="time" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.time')}
               </TabsTrigger>
               <TabsTrigger 
                 value="speed" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.speed')}
               </TabsTrigger>
               <TabsTrigger 
                 value="predicted" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.predicted')}
               </TabsTrigger>
               <TabsTrigger 
                 value="finish" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.finish')}
               </TabsTrigger>
               <TabsTrigger 
                 value="vma" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.vma')}
               </TabsTrigger>
               <TabsTrigger 
                 value="vo2max" 
-                className="data-[state=active]:bg-black data-[state=active]:text-white bg-[#D3E4FD] py-2"
+                className="data-[state=active]:bg-[#9b87f5] data-[state=active]:text-white bg-[#F1F0FB] py-2"
               >
                 {t('tabs.vo2max')}
               </TabsTrigger>
