@@ -22,7 +22,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#FDE1D3] to-[#F1F0FB] p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FEC6A1] to-[#E5DEFF]">
+          <h1 className="text-2xl sm:text-4xl font-bold text-black">
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
