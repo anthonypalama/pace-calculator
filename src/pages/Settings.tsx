@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Share2 } from "lucide-react";
+import { RecordsCard } from "@/components/RecordsCard";
+import { ConnectedAppsCard } from "@/components/ConnectedAppsCard";
+import { ProfileCard } from "@/components/ProfileCard";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -44,47 +46,13 @@ const Settings = () => {
   };
 
   const handleSaveRecords = (distance: string, newValue: string) => {
-    const oldValue = user.records[distance as keyof typeof user.records];
-    if (oldValue && isNewRecord(oldValue, newValue)) {
-      setUser(prev => ({
-        ...prev,
-        records: {
-          ...prev.records,
-          [distance]: newValue
-        }
-      }));
-      
-      toast.success("🎉 Nouveau record personnel !", {
-        description: `Félicitations ! Vous avez battu votre record sur ${distance}`,
-        action: {
-          label: "Partager",
-          onClick: () => handleShare(distance, newValue)
-        },
-        className: "animate-bounce"
-      });
-    } else {
-      setUser(prev => ({
-        ...prev,
-        records: {
-          ...prev.records,
-          [distance]: newValue
-        }
-      }));
-    }
-  };
-
-  const isNewRecord = (oldTime: string, newTime: string): boolean => {
-    const oldSeconds = timeToSeconds(oldTime);
-    const newSeconds = timeToSeconds(newTime);
-    return newSeconds < oldSeconds;
-  };
-
-  const timeToSeconds = (time: string): number => {
-    const parts = time.split(':').map(Number);
-    if (parts.length === 3) {
-      return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    }
-    return parts[0] * 60 + parts[1];
+    setUser(prev => ({
+      ...prev,
+      records: {
+        ...prev.records,
+        [distance]: newValue
+      }
+    }));
   };
 
   const handleShare = async (distance: string, time: string) => {
@@ -101,7 +69,6 @@ const Settings = () => {
         console.error('Erreur lors du partage:', error);
       }
     } else {
-      // Fallback pour les navigateurs qui ne supportent pas l'API Web Share
       navigator.clipboard.writeText(text);
       toast.success("Texte copié dans le presse-papier !");
     }
@@ -120,130 +87,24 @@ const Settings = () => {
         </Button>
 
         <div className="space-y-6">
-          {/* Profil */}
-          <Card className="p-6 bg-white/80 backdrop-blur-sm">
-            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <div className="relative">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={user.avatar} />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                {isEditing && (
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setUser(prev => ({
-                            ...prev,
-                            avatar: reader.result as string
-                          }));
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex-1 space-y-2 text-center sm:text-left">
-                {isEditing ? (
-                  <>
-                    <Input
-                      value={user.name}
-                      onChange={(e) => setUser(prev => ({ ...prev, name: e.target.value }))}
-                      className="text-xl font-bold"
-                    />
-                    <Input
-                      type="email"
-                      value={user.email}
-                      onChange={(e) => setUser(prev => ({ ...prev, email: e.target.value }))}
-                    />
-                    <Input
-                      type="date"
-                      value={user.birthDate}
-                      onChange={(e) => setUser(prev => ({ ...prev, birthDate: e.target.value }))}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <h2 className="text-2xl font-bold text-[#8B5CF6]">{user.name}</h2>
-                    <p className="text-gray-600">{user.email}</p>
-                    <p className="text-gray-600">Né(e) le : {new Date(user.birthDate).toLocaleDateString()}</p>
-                  </>
-                )}
-              </div>
-              <Button
-                onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white"
-              >
-                {isEditing ? "Sauvegarder" : "Modifier le profil"}
-              </Button>
-            </div>
-          </Card>
+          <ProfileCard 
+            user={user}
+            isEditing={isEditing}
+            onSave={handleSave}
+            setIsEditing={setIsEditing}
+            setUser={setUser}
+          />
 
-          {/* Records Personnels */}
-          <Card className="p-6 bg-white/80 backdrop-blur-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-[#8B5CF6]">Records Personnels</h3>
-              <Button
-                onClick={() => setIsEditingRecords(!isEditingRecords)}
-                className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white"
-              >
-                {isEditingRecords ? "Terminer" : "Modifier les records"}
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {Object.entries(user.records).map(([distance, time]) => (
-                <div key={distance} className="p-3 bg-[#D3E4FD] rounded-lg">
-                  <div className="text-sm text-gray-600">{distance}</div>
-                  {isEditingRecords ? (
-                    <Input
-                      value={time}
-                      onChange={(e) => handleSaveRecords(distance, e.target.value)}
-                      className="mt-1"
-                      placeholder="mm:ss"
-                    />
-                  ) : (
-                    <div className="font-semibold text-[#8B5CF6] flex items-center justify-between">
-                      {time}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleShare(distance, time)}
-                        className="ml-2"
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
+          <RecordsCard
+            records={user.records}
+            isEditing={isEditingRecords}
+            onSaveRecord={handleSaveRecords}
+            onShare={handleShare}
+          />
 
-          {/* Applications Connectées */}
-          <Card className="p-6 bg-white/80 backdrop-blur-sm">
-            <h3 className="text-xl font-semibold mb-4 text-[#8B5CF6]">Applications Connectées</h3>
-            <div className="space-y-4">
-              {user.connectedApps.map((app) => (
-                <div key={app.name} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="font-medium text-gray-700">{app.name}</div>
-                    <Badge variant={app.connected ? "default" : "secondary"}>
-                      {app.connected ? "Connecté" : "Non connecté"}
-                    </Badge>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    {app.connected ? "Déconnecter" : "Connecter"}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </Card>
+          <ConnectedAppsCard
+            connectedApps={user.connectedApps}
+          />
         </div>
       </div>
     </div>

@@ -4,93 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 export const Vo2MaxCalculator = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
   const { toast } = useToast();
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('male');
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
+  const [vma, setVma] = useState<string>('');
   const [vo2max, setVo2max] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      loadUserData();
-    }
-  }, [user]);
-
-  const loadUserData = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .select('age, gender, weight, height')
-      .eq('user_id', user.id)
-      .single();
-
-    if (error) {
-      console.error('Erreur de chargement des données:', error);
-      return;
-    }
-
-    if (data) {
-      setAge(data.age.toString());
-      setGender(data.gender);
-      setWeight(data.weight.toString());
-      setHeight(data.height.toString());
-    }
-  };
-
-  const saveUserData = async () => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('user_profiles')
-      .upsert({
-        user_id: user.id,
-        age: parseInt(age),
-        gender,
-        weight: parseFloat(weight),
-        height: parseFloat(height),
-        vo2max: vo2max,
-        updated_at: new Date().toISOString(),
-      });
-
-    if (error) {
-      console.error('Erreur de sauvegarde:', error);
-      toast({
-        title: t('vo2max.saveError'),
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: t('vo2max.saveSuccess'),
-        description: t('vo2max.dataSaved'),
-      });
-    }
-  };
-
-  const calculateVo2Max = async () => {
-    if (!age || !weight || !height) return;
-
-    const baseVo2Max = gender === 'male' ? 56.363 : 44.998;
-    const ageEffect = -0.381 * parseInt(age);
-    const weightEffect = -0.754 * (parseInt(weight) / Math.pow(parseInt(height) / 100, 2));
-    const heightEffect = 0.464 * parseInt(height);
-
-    const estimated = Math.max(0, Math.round((baseVo2Max + ageEffect + weightEffect + heightEffect) * 10) / 10);
+  const calculateVo2Max = () => {
+    if (!vma) return;
+    
+    const vmaNumber = parseFloat(vma);
+    if (isNaN(vmaNumber)) return;
+    
+    // Formule : VO2max = VMA x 3.5
+    const estimated = Math.round(vmaNumber * 3.5 * 10) / 10;
     setVo2max(estimated);
-
-    if (user) {
-      await saveUserData();
-    }
+    
+    toast({
+      title: t('vo2max.calculated'),
+      description: `${estimated} ml/kg/min`,
+    });
   };
 
   const getVo2MaxCategory = (value: number) => {
@@ -106,50 +41,14 @@ export const Vo2MaxCalculator = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">{t('vo2max.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label>{t('vo2max.gender')}</Label>
-          <RadioGroup
-            value={gender}
-            onValueChange={setGender}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="male" id="male" />
-              <Label htmlFor="male">{t('vo2max.male')}</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="female" id="female" />
-              <Label htmlFor="female">{t('vo2max.female')}</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="age">{t('vo2max.age')}</Label>
+          <Label htmlFor="vma">{t('vo2max.vma')}</Label>
           <Input
-            id="age"
+            id="vma"
             type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="weight">{t('vo2max.weight')}</Label>
-          <Input
-            id="weight"
-            type="number"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="height">{t('vo2max.height')}</Label>
-          <Input
-            id="height"
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
+            step="0.1"
+            value={vma}
+            onChange={(e) => setVma(e.target.value)}
+            placeholder="14.5"
           />
         </div>
 
