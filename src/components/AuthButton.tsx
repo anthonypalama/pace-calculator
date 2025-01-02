@@ -25,6 +25,7 @@ export const AuthButton = () => {
       onClick={handleAuth}
       variant="outline"
       className="bg-white/50 backdrop-blur-sm"
+      data-auth-button="true"
     >
       {user ? t('auth.signOut') : t('auth.signIn')}
     </Button>

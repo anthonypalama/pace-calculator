@@ -13,11 +13,28 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AuthButton } from "@/components/AuthButton";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pace');
   const { t } = useTranslation();
+  const { user } = useAuth();
+
+  const handleSettingsClick = () => {
+    if (!user) {
+      toast.error(t('auth.requireLogin'), {
+        description: t('auth.loginToAccess'),
+        action: {
+          label: t('auth.signIn'),
+          onClick: () => document.querySelector<HTMLButtonElement>('[data-auth-button="true"]')?.click()
+        }
+      });
+      return;
+    }
+    navigate('/settings');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FDE1D3] to-[#F1F0FB] p-4 sm:p-6">
@@ -32,7 +49,7 @@ const Index = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/settings')}
+              onClick={handleSettingsClick}
               className="rounded-full hover:bg-white/50 backdrop-blur-sm"
             >
               <Settings className="h-5 w-5" />
