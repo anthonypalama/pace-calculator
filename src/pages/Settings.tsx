@@ -2,37 +2,37 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { RecordsCard } from "@/components/RecordsCard";
 import { ConnectedAppsCard } from "@/components/ConnectedAppsCard";
 import { ProfileCard } from "@/components/ProfileCard";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingRecords, setIsEditingRecords] = useState(false);
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    birthDate: "1990-01-01",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    birthDate: "",
+    avatar: "",
     records: {
-      "1000m": "3:30",
-      "1 mile": "5:45",
-      "5km": "20:15",
-      "10km": "42:30",
-      "Semi": "1:45:00",
-      "Marathon": "3:45:00",
-      "50km": "5:30:00",
-      "100km": "12:00:00",
-      "100 miles": "24:00:00"
+      "1000m": "",
+      "1 mile": "",
+      "5km": "",
+      "10km": "",
+      "Semi": "",
+      "Marathon": "",
+      "50km": "",
+      "100km": "",
+      "100 miles": ""
     },
     connectedApps: [
-      { name: "Strava", connected: true },
+      { name: "Strava", connected: false },
       { name: "Garmin Connect", connected: false },
       { name: "Polar", connected: false },
       { name: "Suunto", connected: false },
@@ -40,19 +40,101 @@ const Settings = () => {
     ]
   });
 
-  const handleSave = () => {
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const loadUserData = async () => {
+    if (!user) return;
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Erreur lors du chargement du profil:', profileError);
+      return;
+    }
+
+    const { data: records, error: recordsError } = await supabase
+      .from('records')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (recordsError) {
+      console.error('Erreur lors du chargement des records:', recordsError);
+      return;
+    }
+
+    const recordsMap = records?.reduce((acc, record) => {
+      acc[record.distance] = record.time;
+      return acc;
+    }, {});
+
+    setUserData(prev => ({
+      ...prev,
+      name: profile?.full_name || user.user_metadata?.full_name || "",
+      email: user.email || "",
+      birthDate: profile?.birth_date || "",
+      avatar: profile?.avatar_url || user.user_metadata?.avatar_url || "",
+      records: { ...prev.records, ...recordsMap }
+    }));
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        full_name: userData.name,
+        birth_date: userData.birthDate,
+        avatar_url: userData.avatar,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) {
+      toast.error("Erreur lors de la sauvegarde du profil");
+      console.error('Erreur de sauvegarde:', error);
+      return;
+    }
+
     setIsEditing(false);
     toast.success("Profil mis à jour avec succès !");
   };
 
-  const handleSaveRecords = (distance: string, newValue: string) => {
-    setUser(prev => ({
+  const handleSaveRecords = async (distance: string, newValue: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('records')
+      .upsert({
+        user_id: user.id,
+        distance: distance,
+        time: newValue,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) {
+      toast.error("Erreur lors de la sauvegarde du record");
+      console.error('Erreur de sauvegarde du record:', error);
+      return;
+    }
+
+    setUserData(prev => ({
       ...prev,
       records: {
         ...prev.records,
         [distance]: newValue
       }
     }));
+
+    toast.success(`Record ${distance} mis à jour !`);
   };
 
   const handleShare = async (distance: string, time: string) => {
@@ -74,6 +156,20 @@ const Settings = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6 flex items-center justify-center">
+        <Card className="p-6 text-center">
+          <h2 className="text-xl font-semibold mb-4">Connexion requise</h2>
+          <p className="mb-4">Veuillez vous connecter pour accéder à vos paramètres.</p>
+          <Button onClick={() => navigate('/')} className="mr-2">
+            Retour
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
@@ -88,22 +184,22 @@ const Settings = () => {
 
         <div className="space-y-6">
           <ProfileCard 
-            user={user}
+            user={userData}
             isEditing={isEditing}
             onSave={handleSave}
             setIsEditing={setIsEditing}
-            setUser={setUser}
+            setUser={setUserData}
           />
 
           <RecordsCard
-            records={user.records}
+            records={userData.records}
             isEditing={isEditingRecords}
             onSaveRecord={handleSaveRecords}
             onShare={handleShare}
           />
 
           <ConnectedAppsCard
-            connectedApps={user.connectedApps}
+            connectedApps={userData.connectedApps}
           />
         </div>
       </div>
