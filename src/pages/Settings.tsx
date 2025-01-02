@@ -156,20 +156,6 @@ const Settings = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6 flex items-center justify-center">
-        <Card className="p-6 text-center">
-          <h2 className="text-xl font-semibold mb-4">Connexion requise</h2>
-          <p className="mb-4">Veuillez vous connecter pour accéder à vos paramètres.</p>
-          <Button onClick={() => navigate('/')} className="mr-2">
-            Retour
-          </Button>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
