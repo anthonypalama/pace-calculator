@@ -12,29 +12,11 @@ import { Vo2MaxCalculator } from "@/components/Vo2MaxCalculator";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { AuthButton } from "@/components/AuthButton";
-import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
 
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pace');
   const { t } = useTranslation();
-  const { user } = useAuth();
-
-  const handleSettingsClick = () => {
-    if (!user) {
-      toast.error(t('auth.requireLogin'), {
-        description: t('auth.loginToAccess'),
-        action: {
-          label: t('auth.signIn'),
-          onClick: () => document.querySelector<HTMLButtonElement>('[data-auth-button="true"]')?.click()
-        }
-      });
-      return;
-    }
-    navigate('/settings');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FDE1D3] to-[#F1F0FB] p-4 sm:p-6">
@@ -44,61 +26,60 @@ const Index = () => {
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
-            <AuthButton />
             <LanguageSwitcher />
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleSettingsClick}
-              className="rounded-full hover:bg-white/50 backdrop-blur-sm"
+              onClick={() => navigate('/settings')}
+              className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
             >
               <Settings className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg animate-fade-in">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full grid grid-cols-2 sm:grid-cols-7 gap-2 bg-transparent h-auto p-1">
               <TabsTrigger 
                 value="pace" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.converter')}
               </TabsTrigger>
               <TabsTrigger 
                 value="time" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.time')}
               </TabsTrigger>
               <TabsTrigger 
                 value="speed" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.speed')}
               </TabsTrigger>
               <TabsTrigger 
                 value="predicted" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.predicted')}
               </TabsTrigger>
               <TabsTrigger 
                 value="finish" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.finish')}
               </TabsTrigger>
               <TabsTrigger 
                 value="vma" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.vma')}
               </TabsTrigger>
               <TabsTrigger 
                 value="vo2max" 
-                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2"
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.vo2max')}
               </TabsTrigger>
