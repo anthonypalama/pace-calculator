@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { Settings, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaceCalculator } from "@/components/PaceCalculator";
@@ -19,13 +19,21 @@ const Index = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FDE1D3] to-[#F1F0FB] p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-pastel-peach to-pastel-purple p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl sm:text-4xl font-bold text-black">
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/settings')}
+              className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            >
+              <Edit className="h-5 w-5" />
+            </Button>
             <LanguageSwitcher />
             <Button
               variant="ghost"
@@ -75,7 +83,7 @@ const Index = () => {
                 value="vma" 
                 className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
-                {t('tabs.vma')}
+                VMA
               </TabsTrigger>
               <TabsTrigger 
                 value="vo2max" 
