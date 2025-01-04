@@ -1,15 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Settings as SettingsIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { RecordsCard } from "@/components/RecordsCard";
+import { ProfileCard } from "@/components/ProfileCard";
+import { Separator } from "@/components/ui/separator";
 
 const Settings = () => {
   const navigate = useNavigate();
   const [isEditingRecords, setIsEditingRecords] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  
   const [userData, setUserData] = useState({
+    name: "John Doe",
+    email: "john@example.com",
+    birthDate: "1990-01-01",
+    avatar: "/placeholder.svg",
     records: {
       "1000m": "",
       "1 mile": "",
@@ -53,19 +61,40 @@ const Settings = () => {
     }
   };
 
+  const handleSaveProfile = () => {
+    setIsEditingProfile(false);
+    toast.success("Profil mis à jour avec succès !");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FEF7CD] to-[#FFDEE2] p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-pastel-peach to-pastel-purple p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <Button
-          variant="ghost"
-          className="mb-6 text-[#8B5CF6] hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            className="text-black hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour
+          </Button>
+          <h1 className="text-2xl font-bold text-black flex items-center gap-2">
+            <SettingsIcon className="h-6 w-6" />
+            Paramètres
+          </h1>
+        </div>
 
         <div className="space-y-6 animate-fade-in">
+          <ProfileCard
+            user={userData}
+            isEditing={isEditingProfile}
+            onSave={handleSaveProfile}
+            setIsEditing={setIsEditingProfile}
+            setUser={setUserData}
+          />
+          
+          <Separator className="my-6" />
+          
           <RecordsCard
             records={userData.records}
             isEditing={isEditingRecords}
