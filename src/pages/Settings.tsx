@@ -72,7 +72,7 @@ const Settings = () => {
         <div className="flex items-center justify-between mb-6">
           <Button
             variant="ghost"
-            className="text-black hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

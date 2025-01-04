@@ -79,7 +79,8 @@ export const ProfileCard = ({ user, isEditing, onSave, setIsEditing, setUser }: 
         </div>
         <Button
           onClick={() => isEditing ? onSave() : setIsEditing(true)}
-          className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white"
+          className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+          variant="ghost"
         >
           {isEditing ? "Sauvegarder" : "Modifier le profil"}
         </Button>
