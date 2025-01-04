@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Share2 } from "lucide-react";
+import { Share2, Pencil } from "lucide-react";
 import { getBestVmaEstimate } from "@/utils/vmaCalculator";
 import { toast } from "sonner";
 
@@ -18,7 +18,17 @@ export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare }: Recor
   return (
     <Card className="p-6 bg-white/80 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-[#8B5CF6]">Records Personnels</h3>
+        <div className="flex items-center gap-4">
+          <h3 className="text-xl font-semibold text-[#8B5CF6]">Records Personnels</h3>
+          <Button
+            onClick={() => setIsEditing(!isEditing)}
+            variant="ghost"
+            className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+          >
+            {isEditing ? "Sauvegarder" : "Modifier les records"}
+            <Pencil className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
         {estimates && (
           <div className="text-sm text-gray-600">
             <p>VMA estimée: {estimates.vma} km/h</p>
