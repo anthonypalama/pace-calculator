@@ -100,6 +100,7 @@ const Settings = () => {
             isEditing={isEditingRecords}
             onSaveRecord={handleSaveRecords}
             onShare={handleShare}
+            setIsEditing={setIsEditingRecords}
           />
         </div>
       </div>

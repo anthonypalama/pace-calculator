@@ -10,9 +10,10 @@ interface RecordsCardProps {
   isEditing: boolean;
   onSaveRecord: (distance: string, time: string) => void;
   onShare: (distance: string, time: string) => void;
+  setIsEditing: (value: boolean) => void;
 }
 
-export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare }: RecordsCardProps) => {
+export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare, setIsEditing }: RecordsCardProps) => {
   const estimates = getBestVmaEstimate(records);
 
   return (
