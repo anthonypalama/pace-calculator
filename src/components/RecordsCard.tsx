@@ -24,7 +24,7 @@ export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare, setIsEd
           <Button
             onClick={() => setIsEditing(!isEditing)}
             variant="ghost"
-            className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 bg-[#D946EF] text-white"
           >
             {isEditing ? "Sauvegarder" : "Modifier les records"}
             <Pencil className="h-4 w-4 ml-2" />
