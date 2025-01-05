@@ -2,14 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Settings as SettingsIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { RecordsCard } from "@/components/RecordsCard";
 import { ProfileCard } from "@/components/ProfileCard";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
+import { getRecords } from "@/lib/records";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isEditingRecords, setIsEditingRecords] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   
@@ -31,6 +34,32 @@ const Settings = () => {
     }
   });
 
+  useEffect(() => {
+    const loadRecords = async () => {
+      if (user) {
+        try {
+          const records = await getRecords(user.id);
+          const recordsMap: Record<string, string> = {};
+          records.forEach((record: any) => {
+            recordsMap[record.distance] = record.time;
+          });
+          setUserData(prev => ({
+            ...prev,
+            records: {
+              ...prev.records,
+              ...recordsMap
+            }
+          }));
+        } catch (error) {
+          console.error('Erreur lors du chargement des records:', error);
+          toast.error("Erreur lors du chargement des records");
+        }
+      }
+    };
+
+    loadRecords();
+  }, [user]);
+
   const handleSaveRecords = async (distance: string, newValue: string) => {
     setUserData(prev => ({
       ...prev,
@@ -39,7 +68,6 @@ const Settings = () => {
         [distance]: newValue
       }
     }));
-    toast.success(`Record ${distance} mis à jour !`);
   };
 
   const handleShare = async (distance: string, time: string) => {

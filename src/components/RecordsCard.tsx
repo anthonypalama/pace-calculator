@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Share2, Pencil } from "lucide-react";
 import { getBestVmaEstimate } from "@/utils/vmaCalculator";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { upsertRecord } from "@/lib/records";
 
 interface RecordsCardProps {
   records: Record<string, string>;
@@ -15,6 +17,29 @@ interface RecordsCardProps {
 
 export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare, setIsEditing }: RecordsCardProps) => {
   const estimates = getBestVmaEstimate(records);
+  const { user } = useAuth();
+
+  const handleSaveRecord = async (distance: string, time: string) => {
+    try {
+      if (!user) {
+        toast.error("Vous devez être connecté pour enregistrer vos records");
+        return;
+      }
+
+      await upsertRecord({
+        user_id: user.id,
+        distance,
+        time,
+        updated_at: new Date().toISOString(),
+      });
+
+      onSaveRecord(distance, time);
+      toast.success(`Record ${distance} mis à jour !`);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du record:', error);
+      toast.error("Erreur lors de la sauvegarde du record");
+    }
+  };
 
   return (
     <Card className="p-6 bg-white/80 backdrop-blur-sm">
@@ -44,7 +69,7 @@ export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare, setIsEd
             {isEditing ? (
               <Input
                 value={time}
-                onChange={(e) => onSaveRecord(distance, e.target.value)}
+                onChange={(e) => handleSaveRecord(distance, e.target.value)}
                 className="mt-1"
                 placeholder="hh:mm:ss"
               />
