@@ -30,9 +30,10 @@ export const PaceCalculator = () => {
   };
 
   const handleKmhChange = (value: string) => {
-    setKmh(value);
-    if (!isNaN(Number(value)) && Number(value) > 0) {
-      setMinKm(convertKmhToMinKm(Number(value)));
+    const numericValue = value.replace(/[^\d.]/g, '');
+    setKmh(numericValue);
+    if (!isNaN(Number(numericValue)) && Number(numericValue) > 0) {
+      setMinKm(convertKmhToMinKm(Number(numericValue)));
     } else {
       setMinKm('');
     }
@@ -55,8 +56,8 @@ export const PaceCalculator = () => {
           <Label htmlFor="kmh">Vitesse (km/h)</Label>
           <Input
             id="kmh"
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={kmh}
             onChange={(e) => handleKmhChange(e.target.value)}
             placeholder="Entrez la vitesse"

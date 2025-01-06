@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TimeInput } from './TimeInput';
 import { QuickDistanceButtons } from './QuickDistanceButtons';
 import { SplitTimes } from './SplitTimes';
+import { PaceInput } from './PaceInput';
 import { calculatePaceFromSpeed, calculateSplitTimes } from '../utils/timeCalculations';
 
 export const TimeCalculator = () => {
@@ -16,75 +17,41 @@ export const TimeCalculator = () => {
   const [showSplits, setShowSplits] = useState(false);
   const [splits, setSplits] = useState<string[]>([]);
 
-  const calculateFromSpeed = (newSpeed: number) => {
-    const newPace = calculatePaceFromSpeed(newSpeed);
-    setPace(newPace);
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numericValue = value.replace(/[^\d.]/g, '');
     
-    if (distance) {
-      const timeHours = Number(distance) / newSpeed;
-      const hours = Math.floor(timeHours);
-      const minutes = Math.floor((timeHours - hours) * 60);
-      const seconds = Math.round(((timeHours - hours) * 60 - minutes) * 60);
-      setTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-    }
+    // Positionne le curseur à la fin
+    const input = e.target as HTMLInputElement;
+    const position = input.selectionStart || 0;
+    
+    setSpeed(numericValue);
+    
+    // Rétablit la position du curseur après la mise à jour
+    setTimeout(() => {
+      input.setSelectionRange(position, position);
+    }, 0);
   };
 
-  const calculateFromPace = (paceString: string) => {
-    const [paceMinutes, paceSeconds] = paceString.split(':').map(Number);
-    if (!isNaN(paceMinutes) && !isNaN(paceSeconds)) {
-      const totalMinutesPerKm = paceMinutes + paceSeconds / 60;
-      const newSpeed = 60 / totalMinutesPerKm;
-      setSpeed(newSpeed.toFixed(2));
-      
-      if (distance) {
-        const timeHours = Number(distance) / newSpeed;
+  // Calcul automatique à chaque changement
+  useEffect(() => {
+    if (distance && speed) {
+      const speedNum = parseFloat(speed);
+      if (!isNaN(speedNum) && speedNum > 0) {
+        const timeHours = Number(distance) / speedNum;
         const hours = Math.floor(timeHours);
         const minutes = Math.floor((timeHours - hours) * 60);
         const seconds = Math.round(((timeHours - hours) * 60 - minutes) * 60);
+        
         setTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-      }
-    }
-  };
-
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSpeed = Number(e.target.value);
-    setSpeed(e.target.value);
-    if (newSpeed > 0) {
-      calculateFromSpeed(newSpeed);
-    } else {
-      setPace('');
-      setTime('');
-    }
-  };
-
-  const handlePaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPace = e.target.value;
-    setPace(newPace);
-    if (newPace.match(/^\d{1,2}:\d{2}$/)) {
-      calculateFromPace(newPace);
-    } else {
-      setSpeed('');
-      setTime('');
-    }
-  };
-
-  useEffect(() => {
-    if (speed && distance) {
-      const newSpeed = Number(speed);
-      if (newSpeed > 0) {
-        calculateFromSpeed(newSpeed);
-        const newSplits = calculateSplitTimes(Number(distance), newSpeed);
+        setPace(calculatePaceFromSpeed(speedNum));
+        
+        const newSplits = calculateSplitTimes(Number(distance), speedNum);
         setSplits(newSplits);
         setShowSplits(true);
       }
     }
-  }, [speed, distance]);
-
-  useEffect(() => {
-    if (pace.match(/^\d{1,2}:\d{2}$/)) {
-      calculateFromPace(pace);
-    }
-  }, [pace, distance]);
+  }, [distance, speed]);
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
@@ -94,10 +61,10 @@ export const TimeCalculator = () => {
           <Label htmlFor="distance">Distance (km)</Label>
           <Input
             id="distance"
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={distance}
-            onChange={(e) => setDistance(e.target.value)}
+            onChange={(e) => setDistance(e.target.value.replace(/[^\d.]/g, ''))}
             placeholder="Entrez la distance"
             className="text-lg"
           />
@@ -107,22 +74,11 @@ export const TimeCalculator = () => {
           <Label htmlFor="speed">Vitesse (km/h)</Label>
           <Input
             id="speed"
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={speed}
             onChange={handleSpeedChange}
             placeholder="Entrez la vitesse"
-            className="text-lg"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="pace">Allure (min:sec/km)</Label>
-          <Input
-            id="pace"
-            type="text"
-            value={pace}
-            onChange={handlePaceChange}
-            placeholder="00:00"
             className="text-lg"
           />
         </div>
@@ -131,25 +87,21 @@ export const TimeCalculator = () => {
           <TimeInput
             id="time"
             value={time}
-            onChange={setTime}
+            onChange={() => {}}
             className="text-lg font-bold bg-secondary/20"
             readOnly
           />
         </div>
-        
-        <Button 
-          onClick={() => {
-            if (speed && distance) {
-              const newSplits = calculateSplitTimes(Number(distance), Number(speed));
-              setSplits(newSplits);
-              setShowSplits(true);
-            }
-          }}
-          className="w-full"
-          disabled={!speed || !distance}
-        >
-          Afficher les temps de passage
-        </Button>
+        <div className="space-y-2">
+          <Label htmlFor="pace">Allure calculée (min:sec/km)</Label>
+          <PaceInput
+            id="pace"
+            value={pace}
+            onChange={() => {}}
+            className="text-lg font-bold bg-secondary/20"
+            readOnly
+          />
+        </div>
 
         <SplitTimes splits={splits} show={showSplits} />
       </div>
