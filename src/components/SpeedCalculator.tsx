@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TimeInput } from './TimeInput';
+import { PaceInput } from './PaceInput';
 
 export const SpeedCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -144,10 +145,10 @@ export const SpeedCalculator = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="pace">Allure calculée (min:sec/km)</Label>
-          <Input
+          <PaceInput
             id="pace"
-            type="text"
             value={pace}
+            onChange={() => {}}
             readOnly
             className="text-lg font-bold bg-secondary/20"
           />

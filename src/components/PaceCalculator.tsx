@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PaceInput } from './PaceInput';
 
 export const PaceCalculator = () => {
   const [kmh, setKmh] = useState<string>('');
@@ -11,7 +12,7 @@ export const PaceCalculator = () => {
     const minPerKm = 60 / kmh;
     const minutes = Math.floor(minPerKm);
     const seconds = Math.round((minPerKm - minutes) * 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const convertMinKmToKmh = (minKm: string) => {
@@ -37,30 +38,11 @@ export const PaceCalculator = () => {
     }
   };
 
-  const formatPaceInput = (value: string): string => {
-    // Supprime tous les caractères non numériques sauf ":"
-    const cleaned = value.replace(/[^\d:]/g, '');
-    
-    // Sépare les minutes et les secondes
-    const [minutes, seconds] = cleaned.split(':');
-    
-    // Si on a des secondes, s'assure qu'elles sont <= 59
-    if (seconds !== undefined) {
-      const numSeconds = parseInt(seconds);
-      if (!isNaN(numSeconds) && numSeconds > 59) {
-        return `${minutes}:59`;
-      }
-    }
-    
-    return cleaned;
-  };
-
   const handleMinKmChange = (value: string) => {
     console.log("Input pace:", value);
-    const formattedValue = formatPaceInput(value);
-    if (formattedValue.match(/^\d{1,2}(:\d{0,2})?$/)) {
-      setMinKm(formattedValue);
-      const kmhValue = convertMinKmToKmh(formattedValue);
+    setMinKm(value);
+    if (value.match(/^\d{1,2}:\d{2}$/)) {
+      const kmhValue = convertMinKmToKmh(value);
       setKmh(kmhValue);
     }
   };
@@ -83,14 +65,12 @@ export const PaceCalculator = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="minKm">Allure (min:sec/km)</Label>
-          <Input
+          <PaceInput
             id="minKm"
-            type="text"
             value={minKm}
-            onChange={(e) => handleMinKmChange(e.target.value)}
+            onChange={handleMinKmChange}
             placeholder="00:00"
             className="text-lg"
-            pattern="\d{1,2}(:\d{0,2})?"
           />
         </div>
       </div>
