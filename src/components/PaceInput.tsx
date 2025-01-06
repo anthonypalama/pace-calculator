@@ -19,25 +19,27 @@ export const PaceInput = ({
   readOnly = false
 }: PaceInputProps) => {
   const formatPaceString = (input: string): string => {
-    // Supprime tous les caractères non numériques sauf ":"
-    const numbers = input.replace(/[^\d:]/g, '');
+    // Supprime tous les caractères non numériques
+    const numbers = input.replace(/[^\d]/g, '');
     
-    // Si on a déjà un ":", on ne garde que les 2 premiers chiffres avant et après
-    if (numbers.includes(':')) {
-      const [minutes, seconds] = numbers.split(':');
-      const formattedMinutes = minutes.slice(0, 2);
-      const formattedSeconds = seconds?.slice(0, 2) || '';
-      
-      // Vérifie que les secondes ne dépassent pas 59
-      if (formattedSeconds && parseInt(formattedSeconds) > 59) {
-        return `${formattedMinutes}:59`;
-      }
-      
-      return `${formattedMinutes}${formattedSeconds ? ':' + formattedSeconds : ''}`;
+    // Si on a moins de 2 caractères, on retourne juste les chiffres
+    if (numbers.length <= 2) {
+      return numbers;
     }
     
-    // Si pas de ":", on formate comme minutes
+    // Si on a plus de 2 caractères, on formate en MM:SS
     const minutes = numbers.slice(0, 2);
+    const seconds = numbers.slice(2, 4);
+    
+    // Vérifie que les secondes ne dépassent pas 59
+    if (seconds && parseInt(seconds) > 59) {
+      return `${minutes}:59`;
+    }
+    
+    if (seconds) {
+      return `${minutes}:${seconds}`;
+    }
+    
     return minutes;
   };
 
@@ -45,24 +47,35 @@ export const PaceInput = ({
     if (readOnly) return;
     
     let newValue = e.target.value;
+    console.log("Input value:", newValue);
     
-    // Ajoute automatiquement ":" après les minutes si on tape un troisième chiffre
+    // Si l'utilisateur tape ":", on l'ignore
+    if (newValue.endsWith(':')) {
+      return;
+    }
+    
+    // Ajoute automatiquement ":" après les minutes
     if (newValue.length === 2 && !newValue.includes(':') && value.length < 2) {
       newValue += ':';
     }
     
     const formatted = formatPaceString(newValue);
+    console.log("Formatted value:", formatted);
     onChange(formatted);
   };
 
   const handleBlur = () => {
     if (readOnly) return;
     
-    if (value.length > 0) {
+    if (value && !value.includes(':')) {
+      // Si on n'a que les minutes, on ajoute automatiquement :00
+      const formatted = `${value.padStart(2, '0')}:00`;
+      onChange(formatted);
+    } else if (value.includes(':')) {
+      // Complète avec des zéros si nécessaire
       const [minutes, seconds] = value.split(':');
-      const formattedMinutes = minutes?.padStart(2, '0') || '00';
-      const formattedSeconds = seconds?.padStart(2, '0') || '00';
-      onChange(`${formattedMinutes}:${formattedSeconds}`);
+      const formatted = `${minutes.padStart(2, '0')}:${(seconds || '00').padStart(2, '0')}`;
+      onChange(formatted);
     }
   };
 
