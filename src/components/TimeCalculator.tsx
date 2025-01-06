@@ -20,17 +20,20 @@ export const TimeCalculator = () => {
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^\d.]/g, '');
-    
-    // Positionne le curseur à la fin
-    const input = e.target as HTMLInputElement;
-    const position = input.selectionStart || 0;
-    
     setSpeed(numericValue);
-    
-    // Rétablit la position du curseur après la mise à jour
-    setTimeout(() => {
-      input.setSelectionRange(position, position);
-    }, 0);
+  };
+
+  const handlePaceChange = (value: string) => {
+    console.log("Changing pace to:", value);
+    setPace(value);
+    if (value.match(/^\d{1,2}:\d{2}$/)) {
+      const [minutes, seconds] = value.split(':').map(Number);
+      const totalMinutes = minutes + (seconds / 60);
+      if (totalMinutes > 0) {
+        const speedValue = (60 / totalMinutes).toFixed(2);
+        setSpeed(speedValue);
+      }
+    }
   };
 
   // Calcul automatique à chaque changement
@@ -52,6 +55,16 @@ export const TimeCalculator = () => {
       }
     }
   }, [distance, speed]);
+
+  // Mise à jour de l'allure quand la vitesse change
+  useEffect(() => {
+    if (speed) {
+      const speedNum = parseFloat(speed);
+      if (!isNaN(speedNum) && speedNum > 0) {
+        setPace(calculatePaceFromSpeed(speedNum));
+      }
+    }
+  }, [speed]);
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
@@ -83,20 +96,20 @@ export const TimeCalculator = () => {
           />
         </div>
         <div className="space-y-2">
+          <Label htmlFor="pace">Allure (min:sec/km)</Label>
+          <PaceInput
+            id="pace"
+            value={pace}
+            onChange={handlePaceChange}
+            placeholder="00:00"
+            className="text-lg"
+          />
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="time">Temps estimé</Label>
           <TimeInput
             id="time"
             value={time}
-            onChange={() => {}}
-            className="text-lg font-bold bg-secondary/20"
-            readOnly
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="pace">Allure calculée (min:sec/km)</Label>
-          <PaceInput
-            id="pace"
-            value={pace}
             onChange={() => {}}
             className="text-lg font-bold bg-secondary/20"
             readOnly
