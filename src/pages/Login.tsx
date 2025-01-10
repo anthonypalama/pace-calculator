@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client"; // Changement ici
 import { toast } from "sonner";
 import { AuthError } from "@supabase/supabase-js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -32,18 +32,21 @@ const Login = () => {
     setError(null);
     
     try {
+      console.log("Tentative de connexion avec:", { email }); // Log pour debug
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error("Erreur de connexion:", error); // Log pour debug
         setError(getErrorMessage(error));
-        console.error("Erreur de connexion:", error);
         return;
       }
 
       if (data.user) {
+        console.log("Connexion réussie:", data.user); // Log pour debug
         toast.success("Connexion réussie !");
         navigate("/");
       }
