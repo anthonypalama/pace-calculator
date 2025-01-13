@@ -5,7 +5,7 @@
     "speed": "VITESSE",
     "predicted": "PRÉDICTION",
     "finish": "ARRIVÉE",
-    "vma": "MAS",
+    "vma": "VMA",
     "vo2max": "VO2 MAX"
   },
   "converter": {
@@ -48,14 +48,14 @@
     "estimatedTime": "Temps estimé"
   },
   "vma": {
-    "title": "Calculateur de MAS",
+    "title": "Calculateur de VMA",
     "testDistance": "Distance du test",
     "completedTime": "Temps réalisé (hh:mm:ss)",
-    "estimatedVma": "MAS estimée (km/h)"
+    "estimatedVma": "VMA estimée (km/h)"
   },
   "vo2max": {
     "title": "Calculateur de VO2 Max",
-    "vma": "MAS (km/h)",
+    "vma": "VMA (km/h)",
     "result": "VO2 Max estimée",
     "calculate": "Calculer",
     "excellent": "Excellent",

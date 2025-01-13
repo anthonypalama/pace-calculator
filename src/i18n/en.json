@@ -35,8 +35,8 @@
     "time": "Time (hh:mm:ss)",
     "calculatedSpeed": "Calculated Speed (km/h)",
     "calculatedPace": "Calculated Pace (min:sec/km)",
-    "showSplits": "Show Split Times",
-    "splits": "Split Times"
+    "showSplits": "Show split times",
+    "splits": "Split times"
   },
   "time": {
     "title": "Time Calculator",
