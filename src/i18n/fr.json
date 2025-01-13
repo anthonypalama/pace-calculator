@@ -26,6 +26,45 @@
   },
   "common": {
     "language": "Langue",
-    "appTitle": "CALCULATEUR D'ALLURE"
+    "appTitle": "CALCULATEUR D'ALLURE",
+    "settings": "Paramètres",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "edit": "Modifier",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginButton": "Se connecter",
+    "registerButton": "Créer un compte",
+    "noAccount": "Pas encore de compte ?",
+    "alreadyAccount": "Déjà un compte ?"
+  },
+  "records": {
+    "title": "Records Personnels",
+    "editButton": "Modifier les records",
+    "saveButton": "Sauvegarder",
+    "shareButton": "Partager",
+    "newRecord": "Nouveau record personnel",
+    "congratulations": "Félicitations !",
+    "share": "Partager"
+  },
+  "notifications": {
+    "recordSaved": "Record sauvegardé avec succès",
+    "recordError": "Erreur lors de la sauvegarde du record",
+    "loginRequired": "Vous devez être connecté pour cette action",
+    "loginSuccess": "Connexion réussie",
+    "loginError": "Erreur de connexion",
+    "logoutSuccess": "Déconnexion réussie",
+    "registerSuccess": "Inscription réussie",
+    "registerError": "Erreur lors de l'inscription"
   }
 }

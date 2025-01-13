@@ -26,6 +26,45 @@
   },
   "common": {
     "language": "Language",
-    "appTitle": "PACE CALCULATOR"
+    "appTitle": "PACE CALCULATOR",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "loginButton": "Login",
+    "registerButton": "Create Account",
+    "noAccount": "Don't have an account?",
+    "alreadyAccount": "Already have an account?"
+  },
+  "records": {
+    "title": "Personal Records",
+    "editButton": "Edit Records",
+    "saveButton": "Save",
+    "shareButton": "Share",
+    "newRecord": "New Personal Record",
+    "congratulations": "Congratulations!",
+    "share": "Share"
+  },
+  "notifications": {
+    "recordSaved": "Record saved successfully",
+    "recordError": "Error saving record",
+    "loginRequired": "You must be logged in for this action",
+    "loginSuccess": "Login successful",
+    "loginError": "Login error",
+    "logoutSuccess": "Logout successful",
+    "registerSuccess": "Registration successful",
+    "registerError": "Registration error"
   }
 }
