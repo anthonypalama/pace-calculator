@@ -8,6 +8,26 @@
     "vma": "VMA",
     "vo2max": "VO2 MAX"
   },
+  "converter": {
+    "title": "Convertisseur d'Allure",
+    "speed": "Vitesse (km/h)",
+    "pace": "Allure (min:sec/km)",
+    "enterSpeed": "Entrez la vitesse"
+  },
+  "predictedTime": {
+    "title": "Prédiction de Temps",
+    "referenceDistance": "Distance de référence",
+    "referenceTime": "Temps de référence (hh:mm:ss)",
+    "targetDistance": "Distance cible",
+    "predictedTime": "Temps prédit"
+  },
+  "finish": {
+    "title": "Arrivée Prédictive",
+    "elapsedTime": "Temps écoulé (hh:mm:ss)",
+    "coveredDistance": "Distance parcourue (km)",
+    "totalDistance": "Distance totale (km)",
+    "predictedTime": "Temps prédit"
+  },
   "vo2max": {
     "title": "Calculateur de VO2 Max",
     "age": "Âge",

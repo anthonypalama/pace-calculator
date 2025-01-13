@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TimeInput } from './TimeInput';
+import { useTranslation } from 'react-i18next';
 
 export const PredictedTimeCalculator = () => {
   const [referenceDistance, setReferenceDistance] = useState<string>('');
   const [referenceTime, setReferenceTime] = useState<string>('');
   const [targetDistance, setTargetDistance] = useState<string>('');
   const [predictedTime, setPredictedTime] = useState<string>('');
+  const { t } = useTranslation();
 
   const distances = [
     { name: '5K', value: '5' },
@@ -60,10 +62,10 @@ export const PredictedTimeCalculator = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Prédiction de Temps</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('predictedTime.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label>Distance de référence</Label>
+          <Label>{t('predictedTime.referenceDistance')}</Label>
           <div className="flex flex-wrap gap-2">
             {distances.map((d) => (
               <Button
@@ -79,7 +81,7 @@ export const PredictedTimeCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="referenceTime">Temps de référence (hh:mm:ss)</Label>
+          <Label htmlFor="referenceTime">{t('predictedTime.referenceTime')}</Label>
           <TimeInput
             id="referenceTime"
             value={referenceTime}
@@ -89,7 +91,7 @@ export const PredictedTimeCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label>Distance cible</Label>
+          <Label>{t('predictedTime.targetDistance')}</Label>
           <div className="flex flex-wrap gap-2">
             {distances.map((d) => (
               <Button
@@ -105,7 +107,7 @@ export const PredictedTimeCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="predictedTime">Temps prédit</Label>
+          <Label htmlFor="predictedTime">{t('predictedTime.predictedTime')}</Label>
           <TimeInput
             id="predictedTime"
             value={predictedTime}

@@ -3,10 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PaceInput } from './PaceInput';
+import { useTranslation } from 'react-i18next';
 
 export const PaceCalculator = () => {
   const [kmh, setKmh] = useState<string>('');
   const [minKm, setMinKm] = useState<string>('');
+  const { t } = useTranslation();
 
   const convertKmhToMinKm = (kmh: number) => {
     const minPerKm = 60 / kmh;
@@ -50,22 +52,22 @@ export const PaceCalculator = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Convertisseur d'Allure</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('converter.title', 'Convertisseur d\'Allure')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="kmh">Vitesse (km/h)</Label>
+          <Label htmlFor="kmh">{t('converter.speed', 'Vitesse (km/h)')}</Label>
           <Input
             id="kmh"
             type="text"
             inputMode="decimal"
             value={kmh}
             onChange={(e) => handleKmhChange(e.target.value)}
-            placeholder="Entrez la vitesse"
+            placeholder={t('converter.enterSpeed', 'Entrez la vitesse')}
             className="text-lg"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="minKm">Allure (min:sec/km)</Label>
+          <Label htmlFor="minKm">{t('converter.pace', 'Allure (min:sec/km)')}</Label>
           <PaceInput
             id="minKm"
             value={minKm}

@@ -8,6 +8,26 @@
     "vma": "VMA",
     "vo2max": "VO2 MAX"
   },
+  "converter": {
+    "title": "Pace Converter",
+    "speed": "Speed (km/h)",
+    "pace": "Pace (min:sec/km)",
+    "enterSpeed": "Enter speed"
+  },
+  "predictedTime": {
+    "title": "Time Prediction",
+    "referenceDistance": "Reference Distance",
+    "referenceTime": "Reference Time (hh:mm:ss)",
+    "targetDistance": "Target Distance",
+    "predictedTime": "Predicted Time"
+  },
+  "finish": {
+    "title": "Predictive Finish",
+    "elapsedTime": "Elapsed Time (hh:mm:ss)",
+    "coveredDistance": "Covered Distance (km)",
+    "totalDistance": "Total Distance (km)",
+    "predictedTime": "Predicted Time"
+  },
   "vo2max": {
     "title": "VO2 Max Calculator",
     "age": "Age",

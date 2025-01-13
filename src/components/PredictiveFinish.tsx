@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimeInput } from './TimeInput';
 import { QuickDistanceButtons } from './QuickDistanceButtons';
+import { useTranslation } from 'react-i18next';
 
 export const PredictiveFinish = () => {
   const [elapsedTime, setElapsedTime] = useState<string>('');
   const [coveredDistance, setCoveredDistance] = useState<string>('');
   const [totalDistance, setTotalDistance] = useState<string>('');
   const [predictedTime, setPredictedTime] = useState<string>('');
+  const { t } = useTranslation();
 
   const calculatePredictedTime = () => {
     if (!elapsedTime || !coveredDistance || !totalDistance) return;
@@ -37,10 +39,10 @@ export const PredictiveFinish = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Arrivée Prédictive</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('finish.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="elapsedTime">Temps écoulé (hh:mm:ss)</Label>
+          <Label htmlFor="elapsedTime">{t('finish.elapsedTime')}</Label>
           <TimeInput
             id="elapsedTime"
             value={elapsedTime}
@@ -49,7 +51,7 @@ export const PredictiveFinish = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="coveredDistance">Distance parcourue (km)</Label>
+          <Label htmlFor="coveredDistance">{t('finish.coveredDistance')}</Label>
           <Input
             id="coveredDistance"
             type="number"
@@ -61,7 +63,7 @@ export const PredictiveFinish = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="totalDistance">Distance totale (km)</Label>
+          <Label htmlFor="totalDistance">{t('finish.totalDistance')}</Label>
           <Input
             id="totalDistance"
             type="number"
@@ -77,7 +79,7 @@ export const PredictiveFinish = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="predictedTime">Temps prédit</Label>
+          <Label htmlFor="predictedTime">{t('finish.predictedTime')}</Label>
           <TimeInput
             id="predictedTime"
             value={predictedTime}
