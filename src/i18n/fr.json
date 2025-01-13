@@ -86,5 +86,30 @@
     "logoutSuccess": "Déconnexion réussie",
     "registerSuccess": "Inscription réussie",
     "registerError": "Erreur lors de l'inscription"
+  },
+  "speed": {
+    "title": "Calculateur de Vitesse",
+    "distance": "Distance (km)",
+    "enterDistance": "Entrez la distance",
+    "time": "Temps (hh:mm:ss)",
+    "calculatedSpeed": "Vitesse calculée (km/h)",
+    "calculatedPace": "Allure calculée (min:sec/km)",
+    "showSplits": "Afficher les temps de passage",
+    "splits": "Temps de passage"
+  },
+  "time": {
+    "title": "Calculateur de Temps",
+    "distance": "Distance (km)",
+    "enterDistance": "Entrez la distance",
+    "speed": "Vitesse (km/h)",
+    "enterSpeed": "Entrez la vitesse",
+    "pace": "Allure (min:sec/km)",
+    "estimatedTime": "Temps estimé"
+  },
+  "vma": {
+    "title": "Calculateur de VMA",
+    "testDistance": "Distance du test",
+    "completedTime": "Temps réalisé (hh:mm:ss)",
+    "estimatedVma": "VMA estimée (km/h)"
   }
 }

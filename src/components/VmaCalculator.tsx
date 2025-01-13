@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimeInput } from './TimeInput';
 import { Button } from './ui/button';
+import { useTranslation } from 'react-i18next';
 
 export const VmaCalculator = () => {
   const [distance, setDistance] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [vma, setVma] = useState<string>('');
+  const { t } = useTranslation();
 
   const distances = [
     { name: '1000m', value: '1' },
@@ -38,10 +40,10 @@ export const VmaCalculator = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Calculateur de VMA</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('vma.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label>Distance du test</Label>
+          <Label>{t('vma.testDistance')}</Label>
           <div className="flex flex-wrap gap-2">
             {distances.map((d) => (
               <Button
@@ -57,7 +59,7 @@ export const VmaCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="time">Temps réalisé (hh:mm:ss)</Label>
+          <Label htmlFor="time">{t('vma.completedTime')}</Label>
           <TimeInput
             id="time"
             value={time}
@@ -67,7 +69,7 @@ export const VmaCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="vma">VMA estimée (km/h)</Label>
+          <Label htmlFor="vma">{t('vma.estimatedVma')}</Label>
           <Input
             id="vma"
             type="text"

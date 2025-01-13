@@ -28,6 +28,31 @@
     "totalDistance": "Total Distance (km)",
     "predictedTime": "Predicted Time"
   },
+  "speed": {
+    "title": "Speed Calculator",
+    "distance": "Distance (km)",
+    "enterDistance": "Enter distance",
+    "time": "Time (hh:mm:ss)",
+    "calculatedSpeed": "Calculated Speed (km/h)",
+    "calculatedPace": "Calculated Pace (min:sec/km)",
+    "showSplits": "Show Split Times",
+    "splits": "Split Times"
+  },
+  "time": {
+    "title": "Time Calculator",
+    "distance": "Distance (km)",
+    "enterDistance": "Enter distance",
+    "speed": "Speed (km/h)",
+    "enterSpeed": "Enter speed",
+    "pace": "Pace (min:sec/km)",
+    "estimatedTime": "Estimated Time"
+  },
+  "vma": {
+    "title": "VMA Calculator",
+    "testDistance": "Test Distance",
+    "completedTime": "Completed Time (hh:mm:ss)",
+    "estimatedVma": "Estimated VMA (km/h)"
+  },
   "vo2max": {
     "title": "VO2 Max Calculator",
     "age": "Age",

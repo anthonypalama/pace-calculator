@@ -8,6 +8,7 @@ import { QuickDistanceButtons } from './QuickDistanceButtons';
 import { SplitTimes } from './SplitTimes';
 import { PaceInput } from './PaceInput';
 import { calculatePaceFromSpeed, calculateSplitTimes } from '../utils/timeCalculations';
+import { useTranslation } from 'react-i18next';
 
 export const TimeCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -16,6 +17,7 @@ export const TimeCalculator = () => {
   const [pace, setPace] = useState<string>('');
   const [showSplits, setShowSplits] = useState(false);
   const [splits, setSplits] = useState<string[]>([]);
+  const { t } = useTranslation();
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -68,35 +70,35 @@ export const TimeCalculator = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Calculateur de Temps</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('time.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="distance">Distance (km)</Label>
+          <Label htmlFor="distance">{t('time.distance')}</Label>
           <Input
             id="distance"
             type="text"
             inputMode="decimal"
             value={distance}
             onChange={(e) => setDistance(e.target.value.replace(/[^\d.]/g, ''))}
-            placeholder="Entrez la distance"
+            placeholder={t('time.enterDistance')}
             className="text-lg"
           />
           <QuickDistanceButtons onSelect={setDistance} selectedValue={distance} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="speed">Vitesse (km/h)</Label>
+          <Label htmlFor="speed">{t('time.speed')}</Label>
           <Input
             id="speed"
             type="text"
             inputMode="decimal"
             value={speed}
             onChange={handleSpeedChange}
-            placeholder="Entrez la vitesse"
+            placeholder={t('time.enterSpeed')}
             className="text-lg"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="pace">Allure (min:sec/km)</Label>
+          <Label htmlFor="pace">{t('time.pace')}</Label>
           <PaceInput
             id="pace"
             value={pace}
@@ -106,7 +108,7 @@ export const TimeCalculator = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="time">Temps estimé</Label>
+          <Label htmlFor="time">{t('time.estimatedTime')}</Label>
           <TimeInput
             id="time"
             value={time}

@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TimeInput } from './TimeInput';
 import { PaceInput } from './PaceInput';
+import { useTranslation } from 'react-i18next';
 
 export const SpeedCalculator = () => {
   const [distance, setDistance] = useState<string>('');
@@ -13,6 +14,7 @@ export const SpeedCalculator = () => {
   const [pace, setPace] = useState<string>('');
   const [showSplits, setShowSplits] = useState(false);
   const [splits, setSplits] = useState<string[]>([]);
+  const { t } = useTranslation();
 
   const quickDistances = [
     { name: '5K', value: '5' },
@@ -92,10 +94,10 @@ export const SpeedCalculator = () => {
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Calculateur d'Allure</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t('speed.title')}</h2>
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="distance">Distance (km)</Label>
+          <Label htmlFor="distance">{t('speed.distance')}</Label>
           <Input
             id="distance"
             type="number"
@@ -105,7 +107,7 @@ export const SpeedCalculator = () => {
               setDistance(e.target.value);
               calculateSpeed();
             }}
-            placeholder="Entrez la distance"
+            placeholder={t('speed.enterDistance')}
             className="text-lg"
           />
           <div className="flex flex-wrap gap-2 mt-2">
@@ -125,7 +127,7 @@ export const SpeedCalculator = () => {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="time">Temps (hh:mm:ss)</Label>
+          <Label htmlFor="time">{t('speed.time')}</Label>
           <TimeInput
             id="time"
             value={time}
@@ -134,7 +136,7 @@ export const SpeedCalculator = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="speed">Vitesse calculée (km/h)</Label>
+          <Label htmlFor="speed">{t('speed.calculatedSpeed')}</Label>
           <Input
             id="speed"
             type="text"
@@ -144,7 +146,7 @@ export const SpeedCalculator = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="pace">Allure calculée (min:sec/km)</Label>
+          <Label htmlFor="pace">{t('speed.calculatedPace')}</Label>
           <PaceInput
             id="pace"
             value={pace}
@@ -159,12 +161,12 @@ export const SpeedCalculator = () => {
           className="w-full"
           disabled={!speed || !distance}
         >
-          Afficher les temps de passage
+          {t('speed.showSplits')}
         </Button>
 
         {showSplits && splits.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h3 className="font-semibold">Temps de passage :</h3>
+            <h3 className="font-semibold">{t('speed.splits')}:</h3>
             <div className="max-h-60 overflow-y-auto space-y-1">
               {splits.map((split, index) => (
                 <div key={index} className="text-sm p-2 bg-secondary/10 rounded">
