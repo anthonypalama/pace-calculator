@@ -5,7 +5,7 @@
     "speed": "SPEED",
     "predicted": "PREDICTION",
     "finish": "FINISH",
-    "vma": "VMA",
+    "vma": "MAS",
     "vo2max": "VO2 MAX"
   },
   "converter": {
@@ -48,26 +48,22 @@
     "estimatedTime": "Estimated Time"
   },
   "vma": {
-    "title": "VMA Calculator",
+    "title": "MAS Calculator",
     "testDistance": "Test Distance",
     "completedTime": "Completed Time (hh:mm:ss)",
-    "estimatedVma": "Estimated VMA (km/h)"
+    "estimatedVma": "Estimated MAS (km/h)"
   },
   "vo2max": {
     "title": "VO2 Max Calculator",
-    "age": "Age",
-    "gender": "Gender",
-    "male": "Male",
-    "female": "Female",
-    "weight": "Weight (kg)",
-    "height": "Height (cm)",
+    "vma": "MAS (km/h)",
     "result": "Estimated VO2 Max",
     "calculate": "Calculate",
     "excellent": "Excellent",
     "good": "Good",
     "average": "Average",
     "belowAverage": "Below Average",
-    "poor": "Poor"
+    "poor": "Poor",
+    "calculated": "VO2 Max calculated"
   },
   "common": {
     "language": "Language",

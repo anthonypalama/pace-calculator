@@ -5,7 +5,7 @@
     "speed": "VITESSE",
     "predicted": "PRÉDICTION",
     "finish": "ARRIVÉE",
-    "vma": "VMA",
+    "vma": "MAS",
     "vo2max": "VO2 MAX"
   },
   "converter": {
@@ -28,21 +28,42 @@
     "totalDistance": "Distance totale (km)",
     "predictedTime": "Temps prédit"
   },
+  "speed": {
+    "title": "Calculateur de Vitesse",
+    "distance": "Distance (km)",
+    "enterDistance": "Entrez la distance",
+    "time": "Temps (hh:mm:ss)",
+    "calculatedSpeed": "Vitesse calculée (km/h)",
+    "calculatedPace": "Allure calculée (min:sec/km)",
+    "showSplits": "Afficher les temps de passage",
+    "splits": "Temps de passage"
+  },
+  "time": {
+    "title": "Calculateur de Temps",
+    "distance": "Distance (km)",
+    "enterDistance": "Entrez la distance",
+    "speed": "Vitesse (km/h)",
+    "enterSpeed": "Entrez la vitesse",
+    "pace": "Allure (min:sec/km)",
+    "estimatedTime": "Temps estimé"
+  },
+  "vma": {
+    "title": "Calculateur de MAS",
+    "testDistance": "Distance du test",
+    "completedTime": "Temps réalisé (hh:mm:ss)",
+    "estimatedVma": "MAS estimée (km/h)"
+  },
   "vo2max": {
     "title": "Calculateur de VO2 Max",
-    "age": "Âge",
-    "gender": "Genre",
-    "male": "Homme",
-    "female": "Femme",
-    "weight": "Poids (kg)",
-    "height": "Taille (cm)",
+    "vma": "MAS (km/h)",
     "result": "VO2 Max estimée",
     "calculate": "Calculer",
     "excellent": "Excellent",
     "good": "Bon",
     "average": "Moyen",
     "belowAverage": "En dessous de la moyenne",
-    "poor": "Faible"
+    "poor": "Faible",
+    "calculated": "VO2 Max calculée"
   },
   "common": {
     "language": "Langue",
@@ -86,30 +107,5 @@
     "logoutSuccess": "Déconnexion réussie",
     "registerSuccess": "Inscription réussie",
     "registerError": "Erreur lors de l'inscription"
-  },
-  "speed": {
-    "title": "Calculateur de Vitesse",
-    "distance": "Distance (km)",
-    "enterDistance": "Entrez la distance",
-    "time": "Temps (hh:mm:ss)",
-    "calculatedSpeed": "Vitesse calculée (km/h)",
-    "calculatedPace": "Allure calculée (min:sec/km)",
-    "showSplits": "Afficher les temps de passage",
-    "splits": "Temps de passage"
-  },
-  "time": {
-    "title": "Calculateur de Temps",
-    "distance": "Distance (km)",
-    "enterDistance": "Entrez la distance",
-    "speed": "Vitesse (km/h)",
-    "enterSpeed": "Entrez la vitesse",
-    "pace": "Allure (min:sec/km)",
-    "estimatedTime": "Temps estimé"
-  },
-  "vma": {
-    "title": "Calculateur de VMA",
-    "testDistance": "Distance du test",
-    "completedTime": "Temps réalisé (hh:mm:ss)",
-    "estimatedVma": "VMA estimée (km/h)"
   }
 }
