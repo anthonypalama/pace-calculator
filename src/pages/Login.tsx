@@ -5,26 +5,29 @@ import { Card } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
   const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("Admin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const getErrorMessage = (error: AuthError) => {
     console.log("Error details:", error);
-    switch (error.message) {
-      case "Invalid login credentials":
-        return "Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.";
-      case "Email not confirmed":
-        return "Veuillez confirmer votre email avant de vous connecter.";
-      default:
-        return error.message;
+    if (error instanceof AuthApiError) {
+      switch (error.message) {
+        case "Invalid login credentials":
+          return "Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.";
+        case "Email not confirmed":
+          return "Veuillez confirmer votre email avant de vous connecter.";
+        default:
+          return error.message;
+      }
     }
+    return error.message;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
