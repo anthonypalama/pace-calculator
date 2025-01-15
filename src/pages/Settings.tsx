@@ -36,14 +36,14 @@ const Settings = () => {
   });
 
   useEffect(() => {
-    const loadRecords = async () => {
+    const loadData = async () => {
       try {
         console.log('Chargement des données...');
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('full_name', 'Anthony Palama')
-          .maybeSingle();  // Utilisation de maybeSingle() au lieu de single()
+          .maybeSingle();
 
         if (profileError) {
           console.error('Erreur lors du chargement du profil:', profileError);
@@ -56,11 +56,6 @@ const Settings = () => {
           const records = await getRecords(profileData.id);
           console.log('Records chargés:', records);
           
-          const recordsMap: Record<string, string> = {};
-          records.forEach((record: any) => {
-            recordsMap[record.distance] = record.time;
-          });
-
           setUserData(prev => ({
             ...prev,
             name: profileData.full_name,
@@ -69,7 +64,10 @@ const Settings = () => {
             avatar: profileData.avatar_url || '/placeholder.svg',
             records: {
               ...prev.records,
-              ...recordsMap
+              ...(records?.reduce((acc: Record<string, string>, record: any) => {
+                acc[record.distance] = record.time;
+                return acc;
+              }, {}) || {})
             }
           }));
         } else {
@@ -82,8 +80,40 @@ const Settings = () => {
       }
     };
 
-    loadRecords();
+    loadData();
   }, []);
+
+  const handleSaveProfile = async () => {
+    try {
+      console.log('Sauvegarde du profil:', userData);
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('full_name', 'Anthony Palama')
+        .maybeSingle();
+
+      if (profileData) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            full_name: userData.name,
+            email: userData.email,
+            birth_date: userData.birthDate,
+            avatar_url: userData.avatar,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', profileData.id);
+
+        if (error) throw error;
+        
+        setIsEditingProfile(false);
+        toast.success("Profil mis à jour avec succès !");
+      }
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du profil:', error);
+      toast.error("Erreur lors de la sauvegarde du profil");
+    }
+  };
 
   const handleSaveRecords = async (distance: string, newValue: string) => {
     try {
@@ -92,7 +122,7 @@ const Settings = () => {
         .from('profiles')
         .select('id')
         .eq('full_name', 'Anthony Palama')
-        .maybeSingle();  // Utilisation de maybeSingle() ici aussi
+        .maybeSingle();
 
       if (profileData) {
         await upsertRecord({
@@ -115,38 +145,6 @@ const Settings = () => {
     } catch (error) {
       console.error('Erreur lors de la sauvegarde du record:', error);
       toast.error("Erreur lors de la sauvegarde du record");
-    }
-  };
-
-  const handleSaveProfile = async () => {
-    try {
-      console.log('Sauvegarde du profil:', userData);
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('full_name', 'Anthony Palama')
-        .maybeSingle();  // Et ici aussi
-
-      if (profileData) {
-        const { error } = await supabase
-          .from('profiles')
-          .update({
-            full_name: userData.name,
-            email: userData.email,
-            birth_date: userData.birthDate,
-            avatar_url: userData.avatar,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', profileData.id);
-
-        if (error) throw error;
-        
-        setIsEditingProfile(false);
-        toast.success("Profil mis à jour avec succès !");
-      }
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde du profil:', error);
-      toast.error("Erreur lors de la sauvegarde du profil");
     }
   };
 
