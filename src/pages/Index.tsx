@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings, Edit, LogIn } from "lucide-react";
+import { Settings, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaceCalculator } from "@/components/PaceCalculator";
@@ -12,25 +12,13 @@ import { Vo2MaxCalculator } from "@/components/Vo2MaxCalculator";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
-import { toast } from "sonner";
+import { useSession } from '@supabase/auth-helpers-react';
 
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pace');
   const { t } = useTranslation();
   const session = useSession();
-  const supabase = useSupabaseClient();
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Erreur lors de la déconnexion");
-    } else {
-      toast.success("Déconnexion réussie");
-      navigate("/login");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pastel-peach to-pastel-purple p-4 sm:p-6">
@@ -40,24 +28,16 @@ const Index = () => {
             {t('common.appTitle')}
           </h1>
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             {session ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => navigate('/settings')}
-                  className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  <Edit className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleLogout}
-                  className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-                >
-                  Déconnexion
-                </Button>
-              </>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/settings')}
+                className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
             ) : (
               <Button
                 variant="ghost"
@@ -68,15 +48,6 @@ const Index = () => {
                 Connexion
               </Button>
             )}
-            <LanguageSwitcher />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/settings')}
-              className="rounded-full hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
           </div>
         </div>
 

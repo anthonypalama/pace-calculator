@@ -1,27 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ArrowLeft, Settings as SettingsIcon } from "lucide-react";
+import { ArrowLeft, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { RecordsCard } from "@/components/RecordsCard";
 import { ProfileCard } from "@/components/ProfileCard";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
-import { getRecords, upsertRecord } from "@/lib/records";
 import { supabase } from "@/lib/supabase";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [isEditingRecords, setIsEditingRecords] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   
   const [userData, setUserData] = useState({
-    name: "Anthony Palama",
-    email: "",
+    name: user?.user_metadata?.full_name || "Utilisateur",
+    email: user?.email || "",
     birthDate: "1991-08-27",
-    avatar: "/placeholder.svg",
+    avatar: user?.user_metadata?.avatar_url || "/placeholder.svg",
     records: {
       "1000m": "02:55",
       "1 mile": "",
@@ -35,113 +33,61 @@ const Settings = () => {
     }
   });
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        console.log('Chargement des données...');
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('full_name', 'Anthony Palama')
-          .maybeSingle();
-
-        if (profileError) {
-          console.error('Erreur lors du chargement du profil:', profileError);
-          toast.error("Erreur lors du chargement du profil");
-          return;
-        }
-
-        if (profileData) {
-          console.log('Profil chargé:', profileData);
-          const records = await getRecords(profileData.id);
-          console.log('Records chargés:', records);
-          
-          setUserData(prev => ({
-            ...prev,
-            name: profileData.full_name,
-            email: profileData.email || '',
-            birthDate: profileData.birth_date || '1991-08-27',
-            avatar: profileData.avatar_url || '/placeholder.svg',
-            records: {
-              ...prev.records,
-              ...(records?.reduce((acc: Record<string, string>, record: any) => {
-                acc[record.distance] = record.time;
-                return acc;
-              }, {}) || {})
-            }
-          }));
-        } else {
-          console.log('Aucun profil trouvé pour Anthony Palama');
-          toast.error("Profil non trouvé");
-        }
-      } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
-        toast.error("Erreur lors du chargement des données");
-      }
-    };
-
-    loadData();
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Déconnexion réussie");
+      navigate("/");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      toast.error("Erreur lors de la déconnexion");
+    }
+  };
 
   const handleSaveProfile = async () => {
     try {
-      console.log('Sauvegarde du profil:', userData);
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('full_name', 'Anthony Palama')
-        .maybeSingle();
-
-      if (profileData) {
-        const { error } = await supabase
-          .from('profiles')
-          .update({
-            full_name: userData.name,
-            email: userData.email,
-            birth_date: userData.birthDate,
-            avatar_url: userData.avatar,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', profileData.id);
-
-        if (error) throw error;
-        
-        setIsEditingProfile(false);
-        toast.success("Profil mis à jour avec succès !");
+      if (!user) {
+        toast.error("Vous devez être connecté pour modifier votre profil");
+        return;
       }
+
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: userData.name,
+          email: userData.email,
+          birth_date: userData.birthDate,
+          avatar_url: userData.avatar,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+      
+      setIsEditingProfile(false);
+      toast.success("Profil mis à jour avec succès !");
     } catch (error) {
       console.error('Erreur lors de la sauvegarde du profil:', error);
       toast.error("Erreur lors de la sauvegarde du profil");
     }
   };
 
-  const handleSaveRecords = async (distance: string, newValue: string) => {
+  const handleSaveRecords = async (distance: string, time: string) => {
     try {
-      console.log('Sauvegarde du record:', { distance, time: newValue });
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('full_name', 'Anthony Palama')
-        .maybeSingle();
-
-      if (profileData) {
-        await upsertRecord({
-          user_id: profileData.id,
-          distance,
-          time: newValue,
-          updated_at: new Date().toISOString(),
-        });
-
-        setUserData(prev => ({
-          ...prev,
-          records: {
-            ...prev.records,
-            [distance]: newValue
-          }
-        }));
-
-        toast.success(`Record ${distance} mis à jour !`);
+      if (!user) {
+        toast.error("Vous devez être connecté pour modifier vos records");
+        return;
       }
+
+      setUserData(prev => ({
+        ...prev,
+        records: {
+          ...prev.records,
+          [distance]: time
+        }
+      }));
+
+      toast.success(`Record ${distance} mis à jour !`);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde du record:', error);
       toast.error("Erreur lors de la sauvegarde du record");
@@ -151,19 +97,12 @@ const Settings = () => {
   const handleShare = async (distance: string, time: string) => {
     const text = `Je viens de battre mon record personnel sur ${distance} avec un temps de ${time} ! 🏃‍♂️🎉`;
     
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Nouveau Record Personnel',
-          text: text,
-          url: window.location.href
-        });
-      } catch (error) {
-        console.error('Erreur lors du partage:', error);
-      }
-    } else {
-      navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
       toast.success("Texte copié dans le presse-papier !");
+    } catch (error) {
+      console.error('Erreur lors de la copie dans le presse-papier:', error);
+      toast.error("Erreur lors du partage");
     }
   };
 
@@ -183,6 +122,14 @@ const Settings = () => {
             <SettingsIcon className="h-6 w-6" />
             Paramètres
           </h1>
+          <Button
+            variant="ghost"
+            className="hover:bg-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 bg-red-500 text-white"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Déconnexion
+          </Button>
         </div>
 
         <div className="space-y-6 animate-fade-in">
