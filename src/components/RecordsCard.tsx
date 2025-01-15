@@ -71,11 +71,12 @@ export const RecordsCard = ({ records, isEditing, onSaveRecord, onShare, setIsEd
                 value={time}
                 onChange={(e) => handleSaveRecord(distance, e.target.value)}
                 className="mt-1"
-                placeholder="hh:mm:ss"
+                placeholder="00:00:00"
+                disabled={!isEditing}
               />
             ) : (
               <div className="font-semibold text-[#8B5CF6] flex items-center justify-between">
-                {time}
+                {time || "Non renseigné"}
                 <Button
                   variant="ghost"
                   size="icon"

@@ -55,16 +55,22 @@ export const ProfileCard = ({ user, isEditing, onSave, setIsEditing, setUser }: 
                 value={user.name}
                 onChange={(e) => setUser(prev => ({ ...prev, name: e.target.value }))}
                 className="text-xl font-bold"
+                placeholder="Votre nom complet"
+                disabled={!isEditing}
               />
               <Input
                 type="email"
                 value={user.email}
                 onChange={(e) => setUser(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="votre@email.com"
+                disabled={!isEditing}
               />
               <Input
                 type="date"
                 value={user.birthDate}
                 onChange={(e) => setUser(prev => ({ ...prev, birthDate: e.target.value }))}
+                placeholder="Date de naissance"
+                disabled={!isEditing}
               />
             </>
           ) : (
