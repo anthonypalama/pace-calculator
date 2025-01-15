@@ -8,7 +8,8 @@ import { RecordsCard } from "@/components/RecordsCard";
 import { ProfileCard } from "@/components/ProfileCard";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
-import { getRecords } from "@/lib/records";
+import { getRecords, upsertRecord } from "@/lib/records";
+import { supabase } from "@/lib/supabase";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -17,12 +18,12 @@ const Settings = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   
   const [userData, setUserData] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    birthDate: "1990-01-01",
+    name: "Anthony Palama",
+    email: "",
+    birthDate: "1991-08-27",
     avatar: "/placeholder.svg",
     records: {
-      "1000m": "",
+      "1000m": "02:55",
       "1 mile": "",
       "5km": "",
       "10km": "",
@@ -36,38 +37,114 @@ const Settings = () => {
 
   useEffect(() => {
     const loadRecords = async () => {
-      if (user) {
-        try {
-          const records = await getRecords(user.id);
+      try {
+        console.log('Chargement des records...');
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('full_name', 'Anthony Palama')
+          .single();
+
+        if (profileError) {
+          console.error('Erreur lors du chargement du profil:', profileError);
+          toast.error("Erreur lors du chargement du profil");
+          return;
+        }
+
+        if (profileData) {
+          console.log('Profil chargé:', profileData);
+          const records = await getRecords(profileData.id);
+          console.log('Records chargés:', records);
+          
           const recordsMap: Record<string, string> = {};
           records.forEach((record: any) => {
             recordsMap[record.distance] = record.time;
           });
+
           setUserData(prev => ({
             ...prev,
+            name: profileData.full_name,
+            email: profileData.email || '',
+            birthDate: profileData.birth_date || '1991-08-27',
+            avatar: profileData.avatar_url || '/placeholder.svg',
             records: {
               ...prev.records,
               ...recordsMap
             }
           }));
-        } catch (error) {
-          console.error('Erreur lors du chargement des records:', error);
-          toast.error("Erreur lors du chargement des records");
         }
+      } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+        toast.error("Erreur lors du chargement des données");
       }
     };
 
     loadRecords();
-  }, [user]);
+  }, []);
 
   const handleSaveRecords = async (distance: string, newValue: string) => {
-    setUserData(prev => ({
-      ...prev,
-      records: {
-        ...prev.records,
-        [distance]: newValue
+    try {
+      console.log('Sauvegarde du record:', { distance, time: newValue });
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('full_name', 'Anthony Palama')
+        .single();
+
+      if (profileData) {
+        await upsertRecord({
+          user_id: profileData.id,
+          distance,
+          time: newValue,
+          updated_at: new Date().toISOString(),
+        });
+
+        setUserData(prev => ({
+          ...prev,
+          records: {
+            ...prev.records,
+            [distance]: newValue
+          }
+        }));
+
+        toast.success(`Record ${distance} mis à jour !`);
       }
-    }));
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du record:', error);
+      toast.error("Erreur lors de la sauvegarde du record");
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      console.log('Sauvegarde du profil:', userData);
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('full_name', 'Anthony Palama')
+        .single();
+
+      if (profileData) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            full_name: userData.name,
+            email: userData.email,
+            birth_date: userData.birthDate,
+            avatar_url: userData.avatar,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', profileData.id);
+
+        if (error) throw error;
+        
+        setIsEditingProfile(false);
+        toast.success("Profil mis à jour avec succès !");
+      }
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du profil:', error);
+      toast.error("Erreur lors de la sauvegarde du profil");
+    }
   };
 
   const handleShare = async (distance: string, time: string) => {
@@ -87,11 +164,6 @@ const Settings = () => {
       navigator.clipboard.writeText(text);
       toast.success("Texte copié dans le presse-papier !");
     }
-  };
-
-  const handleSaveProfile = () => {
-    setIsEditingProfile(false);
-    toast.success("Profil mis à jour avec succès !");
   };
 
   return (
