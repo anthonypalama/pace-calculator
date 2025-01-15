@@ -3,19 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client"; // Changement ici
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { AuthError } from "@supabase/supabase-js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const getErrorMessage = (error: AuthError) => {
+    console.log("Error details:", error);
     switch (error.message) {
       case "Invalid login credentials":
         return "Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.";
@@ -32,7 +33,7 @@ const Login = () => {
     setError(null);
     
     try {
-      console.log("Tentative de connexion avec:", { email }); // Log pour debug
+      console.log("Tentative de connexion avec:", { email });
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -40,13 +41,13 @@ const Login = () => {
       });
 
       if (error) {
-        console.error("Erreur de connexion:", error); // Log pour debug
+        console.error("Erreur de connexion:", error);
         setError(getErrorMessage(error));
         return;
       }
 
       if (data.user) {
-        console.log("Connexion réussie:", data.user); // Log pour debug
+        console.log("Connexion réussie:", data.user);
         toast.success("Connexion réussie !");
         navigate("/");
       }
