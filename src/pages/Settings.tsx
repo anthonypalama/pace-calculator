@@ -38,12 +38,12 @@ const Settings = () => {
   useEffect(() => {
     const loadRecords = async () => {
       try {
-        console.log('Chargement des records...');
+        console.log('Chargement des données...');
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('full_name', 'Anthony Palama')
-          .single();
+          .maybeSingle();  // Utilisation de maybeSingle() au lieu de single()
 
         if (profileError) {
           console.error('Erreur lors du chargement du profil:', profileError);
@@ -72,6 +72,9 @@ const Settings = () => {
               ...recordsMap
             }
           }));
+        } else {
+          console.log('Aucun profil trouvé pour Anthony Palama');
+          toast.error("Profil non trouvé");
         }
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
@@ -89,7 +92,7 @@ const Settings = () => {
         .from('profiles')
         .select('id')
         .eq('full_name', 'Anthony Palama')
-        .single();
+        .maybeSingle();  // Utilisation de maybeSingle() ici aussi
 
       if (profileData) {
         await upsertRecord({
@@ -122,7 +125,7 @@ const Settings = () => {
         .from('profiles')
         .select('id')
         .eq('full_name', 'Anthony Palama')
-        .single();
+        .maybeSingle();  // Et ici aussi
 
       if (profileData) {
         const { error } = await supabase
