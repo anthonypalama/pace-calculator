@@ -11,10 +11,15 @@ type TriathlonDistance = {
   swim: number;
   bike: number;
   run: number;
-  swimSpeedRatio: number;
-  bikeSpeedRatio: number;
-  runSpeedRatio: number;
+  swimRatio: number;
+  bikeRatio: number;
+  runRatio: number;
 };
+
+// Base ratios for Olympic distance (M): 20% swim, 50% bike, 30% run
+const BASE_SWIM_RATIO = 0.20;
+const BASE_BIKE_RATIO = 0.50;
+const BASE_RUN_RATIO = 0.30;
 
 const TRIATHLON_DISTANCES: { [key: string]: TriathlonDistance } = {
   'XS': { 
@@ -22,45 +27,47 @@ const TRIATHLON_DISTANCES: { [key: string]: TriathlonDistance } = {
     swim: 0.4, 
     bike: 10, 
     run: 2.5,
-    swimSpeedRatio: 1,
-    bikeSpeedRatio: 4,
-    runSpeedRatio: 2.5
+    // Adjust ratios based on distance compared to M distance
+    swimRatio: BASE_SWIM_RATIO * (0.4 / 1.5),
+    bikeRatio: BASE_BIKE_RATIO * (10 / 40),
+    runRatio: BASE_RUN_RATIO * (2.5 / 10)
   },
   'S': { 
     name: 'S - Sprint', 
     swim: 0.75, 
     bike: 20, 
     run: 5,
-    swimSpeedRatio: 1,
-    bikeSpeedRatio: 4,
-    runSpeedRatio: 2.5
+    swimRatio: BASE_SWIM_RATIO * (0.75 / 1.5),
+    bikeRatio: BASE_BIKE_RATIO * (20 / 40),
+    runRatio: BASE_RUN_RATIO * (5 / 10)
   },
   'M': { 
     name: 'M - Olympique', 
     swim: 1.5, 
     bike: 40, 
     run: 10,
-    swimSpeedRatio: 1,
-    bikeSpeedRatio: 4,
-    runSpeedRatio: 2.5
+    // Base ratios for Olympic distance
+    swimRatio: BASE_SWIM_RATIO,
+    bikeRatio: BASE_BIKE_RATIO,
+    runRatio: BASE_RUN_RATIO
   },
   'L': { 
     name: 'L - Half Ironman', 
     swim: 1.9, 
     bike: 90, 
     run: 21.1,
-    swimSpeedRatio: 1,
-    bikeSpeedRatio: 4,
-    runSpeedRatio: 2.5
+    swimRatio: BASE_SWIM_RATIO * (1.9 / 1.5),
+    bikeRatio: BASE_BIKE_RATIO * (90 / 40),
+    runRatio: BASE_RUN_RATIO * (21.1 / 10)
   },
   'XL': { 
     name: 'XL - Ironman', 
     swim: 3.8, 
     bike: 180, 
     run: 42.2,
-    swimSpeedRatio: 1,
-    bikeSpeedRatio: 4,
-    runSpeedRatio: 2.5
+    swimRatio: BASE_SWIM_RATIO * (3.8 / 1.5),
+    bikeRatio: BASE_BIKE_RATIO * (180 / 40),
+    runRatio: BASE_RUN_RATIO * (42.2 / 10)
   },
 };
 
@@ -110,22 +117,24 @@ export const TriathlonCalculator = () => {
 
     const distance = TRIATHLON_DISTANCES[selectedDistance];
     
-    // Calcul basé sur les ratios de vitesse moyens pour chaque discipline
-    const totalEffort = (distance.swim * distance.swimSpeedRatio) + 
-                       (distance.bike * distance.bikeSpeedRatio) + 
-                       (distance.run * distance.runSpeedRatio);
-    
-    // Distribution du temps selon les ratios de vitesse
-    const swimMinutes = (activeTime * (distance.swim * distance.swimSpeedRatio) / totalEffort);
-    const bikeMinutes = (activeTime * (distance.bike * distance.bikeSpeedRatio) / totalEffort);
-    const runMinutes = (activeTime * (distance.run * distance.runSpeedRatio) / totalEffort);
+    // Calcul des temps basé sur les ratios ajustés pour chaque distance
+    const totalRatio = distance.swimRatio + distance.bikeRatio + distance.runRatio;
+    const swimMinutes = (activeTime * distance.swimRatio) / totalRatio;
+    const bikeMinutes = (activeTime * distance.bikeRatio) / totalRatio;
+    const runMinutes = (activeTime * distance.runRatio) / totalRatio;
 
     console.log('Calculated times:', {
       swim: swimMinutes,
       bike: bikeMinutes,
       run: runMinutes,
       total: swimMinutes + bikeMinutes + runMinutes,
-      activeTime
+      activeTime,
+      ratios: {
+        swim: distance.swimRatio,
+        bike: distance.bikeRatio,
+        run: distance.runRatio,
+        total: totalRatio
+      }
     });
 
     setSwimTime(minutesToTimeString(swimMinutes));
