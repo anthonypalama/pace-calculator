@@ -106,6 +106,8 @@ export const TriathlonCalculator = () => {
     const transitionMinutes = timeStringToMinutes(transitionTime) * 2; // Deux transitions
     const activeTime = totalMinutes - transitionMinutes;
 
+    console.log('Total time in minutes:', totalMinutes);
+    console.log('Transition time (x2):', transitionMinutes);
     console.log('Active time (minus transitions):', activeTime);
 
     if (activeTime <= 0) {
