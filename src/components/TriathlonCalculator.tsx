@@ -11,14 +11,57 @@ type TriathlonDistance = {
   swim: number;
   bike: number;
   run: number;
+  swimSpeedRatio: number;
+  bikeSpeedRatio: number;
+  runSpeedRatio: number;
 };
 
 const TRIATHLON_DISTANCES: { [key: string]: TriathlonDistance } = {
-  'XS': { name: 'XS - Découverte', swim: 0.4, bike: 10, run: 2.5 },
-  'S': { name: 'S - Sprint', swim: 0.75, bike: 20, run: 5 },
-  'M': { name: 'M - Olympique', swim: 1.5, bike: 40, run: 10 },
-  'L': { name: 'L - Half Ironman', swim: 1.9, bike: 90, run: 21.1 },
-  'XL': { name: 'XL - Ironman', swim: 3.8, bike: 180, run: 42.2 },
+  'XS': { 
+    name: 'XS - Découverte', 
+    swim: 0.4, 
+    bike: 10, 
+    run: 2.5,
+    swimSpeedRatio: 1,
+    bikeSpeedRatio: 4,
+    runSpeedRatio: 2.5
+  },
+  'S': { 
+    name: 'S - Sprint', 
+    swim: 0.75, 
+    bike: 20, 
+    run: 5,
+    swimSpeedRatio: 1,
+    bikeSpeedRatio: 4,
+    runSpeedRatio: 2.5
+  },
+  'M': { 
+    name: 'M - Olympique', 
+    swim: 1.5, 
+    bike: 40, 
+    run: 10,
+    swimSpeedRatio: 1,
+    bikeSpeedRatio: 4,
+    runSpeedRatio: 2.5
+  },
+  'L': { 
+    name: 'L - Half Ironman', 
+    swim: 1.9, 
+    bike: 90, 
+    run: 21.1,
+    swimSpeedRatio: 1,
+    bikeSpeedRatio: 4,
+    runSpeedRatio: 2.5
+  },
+  'XL': { 
+    name: 'XL - Ironman', 
+    swim: 3.8, 
+    bike: 180, 
+    run: 42.2,
+    swimSpeedRatio: 1,
+    bikeSpeedRatio: 4,
+    runSpeedRatio: 2.5
+  },
 };
 
 export const TriathlonCalculator = () => {
@@ -66,17 +109,23 @@ export const TriathlonCalculator = () => {
     }
 
     const distance = TRIATHLON_DISTANCES[selectedDistance];
-    const totalDistance = distance.swim + distance.bike + distance.run;
     
-    // Distribution proportionnelle du temps selon les distances
-    const swimMinutes = (activeTime * (distance.swim / totalDistance));
-    const bikeMinutes = (activeTime * (distance.bike / totalDistance));
-    const runMinutes = (activeTime * (distance.run / totalDistance));
+    // Calcul basé sur les ratios de vitesse moyens pour chaque discipline
+    const totalEffort = (distance.swim * distance.swimSpeedRatio) + 
+                       (distance.bike * distance.bikeSpeedRatio) + 
+                       (distance.run * distance.runSpeedRatio);
+    
+    // Distribution du temps selon les ratios de vitesse
+    const swimMinutes = (activeTime * (distance.swim * distance.swimSpeedRatio) / totalEffort);
+    const bikeMinutes = (activeTime * (distance.bike * distance.bikeSpeedRatio) / totalEffort);
+    const runMinutes = (activeTime * (distance.run * distance.runSpeedRatio) / totalEffort);
 
     console.log('Calculated times:', {
       swim: swimMinutes,
       bike: bikeMinutes,
-      run: runMinutes
+      run: runMinutes,
+      total: swimMinutes + bikeMinutes + runMinutes,
+      activeTime
     });
 
     setSwimTime(minutesToTimeString(swimMinutes));
