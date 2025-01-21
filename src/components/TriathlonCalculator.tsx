@@ -31,6 +31,7 @@ export const TriathlonCalculator = () => {
   const { t } = useTranslation();
 
   const timeStringToMinutes = (timeString: string): number => {
+    if (!timeString) return 0;
     const [hours = '0', minutes = '0', seconds = '0'] = timeString.split(':');
     return parseInt(hours) * 60 + parseInt(minutes) + parseInt(seconds) / 60;
   };
@@ -43,13 +44,26 @@ export const TriathlonCalculator = () => {
   };
 
   const calculateSplitTimes = () => {
-    if (!totalTime) return;
+    console.log('Calculating split times with total time:', totalTime);
+    if (!totalTime) {
+      setSwimTime('');
+      setBikeTime('');
+      setRunTime('');
+      return;
+    }
 
     const totalMinutes = timeStringToMinutes(totalTime);
     const transitionMinutes = timeStringToMinutes(transitionTime) * 2; // Deux transitions
     const activeTime = totalMinutes - transitionMinutes;
 
-    if (activeTime <= 0) return;
+    console.log('Active time (minus transitions):', activeTime);
+
+    if (activeTime <= 0) {
+      setSwimTime('');
+      setBikeTime('');
+      setRunTime('');
+      return;
+    }
 
     const distance = TRIATHLON_DISTANCES[selectedDistance];
     const totalDistance = distance.swim + distance.bike + distance.run;
@@ -59,9 +73,25 @@ export const TriathlonCalculator = () => {
     const bikeMinutes = (activeTime * (distance.bike / totalDistance));
     const runMinutes = (activeTime * (distance.run / totalDistance));
 
+    console.log('Calculated times:', {
+      swim: swimMinutes,
+      bike: bikeMinutes,
+      run: runMinutes
+    });
+
     setSwimTime(minutesToTimeString(swimMinutes));
     setBikeTime(minutesToTimeString(bikeMinutes));
     setRunTime(minutesToTimeString(runMinutes));
+  };
+
+  const handleTotalTimeChange = (newTime: string) => {
+    setTotalTime(newTime);
+    console.log('Total time changed to:', newTime);
+  };
+
+  const handleTransitionTimeChange = (newTime: string) => {
+    setTransitionTime(newTime);
+    console.log('Transition time changed to:', newTime);
   };
 
   useEffect(() => {
@@ -93,7 +123,7 @@ export const TriathlonCalculator = () => {
           <TimeInput
             id="totalTime"
             value={totalTime}
-            onChange={setTotalTime}
+            onChange={handleTotalTimeChange}
             placeholder="00:00:00"
             className="text-lg"
           />
@@ -104,7 +134,7 @@ export const TriathlonCalculator = () => {
           <TimeInput
             id="transitionTime"
             value={transitionTime}
-            onChange={setTransitionTime}
+            onChange={handleTransitionTimeChange}
             placeholder="05:00"
             className="text-lg"
           />
