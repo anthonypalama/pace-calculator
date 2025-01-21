@@ -10,5 +10,18 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(
   supabaseUrl || 'https://your-project-url.supabase.co',
-  supabaseAnonKey || 'your-anon-key'
+  supabaseAnonKey || 'your-anon-key',
+  {
+    auth: {
+      persistSession: true,
+      storageKey: 'supabase.auth.token',
+      storage: window.localStorage,
+      autoRefreshToken: true,
+    },
+  }
 );
+
+// Log auth state changes for debugging
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log('Auth state changed:', event, session);
+});

@@ -24,15 +24,27 @@ export const useAuth = () => {
 
   useEffect(() => {
     console.log('Setting up auth state listener');
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadProfile(session.user.id);
+    
+    // Initial session check
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Initial session:', session);
+        
+        if (session?.user) {
+          setUser(session.user);
+          await loadProfile(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
+    initializeAuth();
+
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth state changed:', _event, session);
       const currentUser = session?.user ?? null;
@@ -49,7 +61,9 @@ export const useAuth = () => {
           });
           
           await loadProfile(currentUser.id);
-          toast.success('Login successful!');
+          if (_event === 'SIGNED_IN') {
+            toast.success('Login successful!');
+          }
         } catch (error) {
           console.error('Error updating profile:', error);
           toast.error('Error updating profile');
@@ -59,7 +73,9 @@ export const useAuth = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
