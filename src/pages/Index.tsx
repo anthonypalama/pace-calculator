@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Settings, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -5,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaceCalculator } from "@/components/PaceCalculator";
 import { TimeCalculator } from "@/components/TimeCalculator";
 import { SpeedCalculator } from "@/components/SpeedCalculator";
+import { DistanceCalculator } from "@/components/DistanceCalculator";
 import { PredictedTimeCalculator } from "@/components/PredictedTimeCalculator";
 import { PredictiveFinish } from "@/components/PredictiveFinish";
 import { VmaCalculator } from "@/components/VmaCalculator";
@@ -54,7 +56,7 @@ const Index = () => {
 
         <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg animate-fade-in">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full grid grid-cols-2 sm:grid-cols-8 gap-2 bg-transparent h-auto p-1">
+            <TabsList className="w-full grid grid-cols-2 sm:grid-cols-9 gap-2 bg-transparent h-auto p-1">
               <TabsTrigger 
                 value="pace" 
                 className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
@@ -72,6 +74,12 @@ const Index = () => {
                 className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
               >
                 {t('tabs.speed')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="distance" 
+                className="data-[state=active]:bg-[#FEC6A1] data-[state=active]:text-white bg-[#FDE1D3] py-2 transition-all duration-300"
+              >
+                {t('tabs.distance')}
               </TabsTrigger>
               <TabsTrigger 
                 value="predicted" 
@@ -114,6 +122,9 @@ const Index = () => {
               </TabsContent>
               <TabsContent value="speed">
                 <SpeedCalculator />
+              </TabsContent>
+              <TabsContent value="distance">
+                <DistanceCalculator />
               </TabsContent>
               <TabsContent value="predicted">
                 <PredictedTimeCalculator />

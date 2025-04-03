@@ -1,8 +1,10 @@
+
 {
   "tabs": {
     "converter": "CONVERTISSEUR",
     "time": "TEMPS",
     "speed": "VITESSE",
+    "distance": "DISTANCE",
     "predicted": "PRÉDICTION",
     "finish": "ARRIVÉE",
     "vma": "VMA",
@@ -37,6 +39,14 @@
     "calculatedPace": "Allure calculée (min:sec/km)",
     "showSplits": "Afficher les temps de passage",
     "splits": "Temps de passage"
+  },
+  "distance": {
+    "title": "Calculateur de Distance",
+    "speed": "Vitesse (km/h)",
+    "enterSpeed": "Entrez la vitesse",
+    "pace": "Allure (min:sec/km)",
+    "time": "Temps (hh:mm:ss)",
+    "calculatedDistance": "Distance calculée"
   },
   "time": {
     "title": "Calculateur de Temps",

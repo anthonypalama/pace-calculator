@@ -1,8 +1,10 @@
+
 {
   "tabs": {
     "converter": "CONVERTER",
     "time": "TIME",
     "speed": "SPEED",
+    "distance": "DISTANCE",
     "predicted": "PREDICTION",
     "finish": "FINISH",
     "vma": "MAS",
@@ -37,6 +39,14 @@
     "calculatedPace": "Calculated Pace (min:sec/km)",
     "showSplits": "Show split times",
     "splits": "Split times"
+  },
+  "distance": {
+    "title": "Distance Calculator",
+    "speed": "Speed (km/h)",
+    "enterSpeed": "Enter speed",
+    "pace": "Pace (min:sec/km)",
+    "time": "Time (hh:mm:ss)",
+    "calculatedDistance": "Calculated Distance"
   },
   "time": {
     "title": "Time Calculator",
